@@ -12,8 +12,8 @@
             <!-- Oracle Database Configuration -->
             <property name="jakarta.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:oracle:thin:@localhost:1521:xe"/>
-            <property name="jakarta.persistence.jdbc.user" value="SYSTEM"/>
-            <property name="jakarta.persistence.jdbc.password" value="password"/>
+            <property name="jakarta.persistence.jdbc.user" value="sysdba"/>
+            <property name="jakarta.persistence.jdbc.password" value="admin"/>
 
             <!-- Hibernate Settings -->
             <property name="hibernate.dialect" value="org.hibernate.dialect.OracleDialect"/>
