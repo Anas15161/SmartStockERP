@@ -1,9 +1,13 @@
 package com.smartstock.erp.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "PRODUCTS")
@@ -13,20 +17,40 @@ public class Product implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
+    @Size(min = 2, max = 100)
     @Column(nullable = false, length = 100)
-    private String name;
+    private String label;
 
-    @Column(length = 255)
-    private String description;
-
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal price;
-
-    @Column(nullable = false)
+    @NotNull
+    @Min(0)
+    @Column(name = "stock_quantity", nullable = false)
     private Integer stockQuantity;
 
-    // Default constructor
+    @NotNull
+    @Min(0)
+    @Column(name = "alert_threshold", nullable = false)
+    private Integer alertThreshold;
+
+    @NotNull
+    @Min(0)
+    @Column(name = "unit_price", nullable = false, precision = 10, scale = 2)
+    private BigDecimal unitPrice;
+
+    @Column(name = "last_updated")
+    private LocalDateTime lastUpdated;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "supplier_id")
+    private Supplier supplier;
+
     public Product() {
+    }
+
+    @PrePersist
+    @PreUpdate
+    protected void onUpdate() {
+        lastUpdated = LocalDateTime.now();
     }
 
     // Getters and Setters
@@ -38,28 +62,12 @@ public class Product implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getLabel() {
+        return label;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public Integer getStockQuantity() {
@@ -68,5 +76,33 @@ public class Product implements Serializable {
 
     public void setStockQuantity(Integer stockQuantity) {
         this.stockQuantity = stockQuantity;
+    }
+
+    public Integer getAlertThreshold() {
+        return alertThreshold;
+    }
+
+    public void setAlertThreshold(Integer alertThreshold) {
+        this.alertThreshold = alertThreshold;
+    }
+
+    public BigDecimal getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(BigDecimal unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    public LocalDateTime getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public Supplier getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(Supplier supplier) {
+        this.supplier = supplier;
     }
 }
