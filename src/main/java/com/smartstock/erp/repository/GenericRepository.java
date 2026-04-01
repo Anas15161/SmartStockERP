@@ -45,6 +45,17 @@ public abstract class GenericRepository<T, ID extends Serializable> {
         return em.createQuery("from " + entityClass.getName(), entityClass).getResultList();
     }
 
+    public List<T> findPaginated(int page, int size) {
+        return em.createQuery("from " + entityClass.getName(), entityClass)
+                .setFirstResult((page - 1) * size)
+                .setMaxResults(size)
+                .getResultList();
+    }
+
+    public long count() {
+        return em.createQuery("select count(e) from " + entityClass.getSimpleName() + " e", Long.class).getSingleResult();
+    }
+
     protected void executeInTransaction(Consumer<EntityManager> action) {
         EntityTransaction tx = em.getTransaction();
         try {

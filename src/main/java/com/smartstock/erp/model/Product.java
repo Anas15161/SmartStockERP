@@ -41,7 +41,7 @@ public class Product implements Serializable {
     @Column(name = "last_updated")
     private LocalDateTime lastUpdated;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "supplier_id")
     private Supplier supplier;
 

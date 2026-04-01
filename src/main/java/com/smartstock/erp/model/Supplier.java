@@ -34,6 +34,7 @@ public class Supplier implements Serializable {
     @Size(max = 50)
     private String category;
 
+    @jakarta.json.bind.annotation.JsonbTransient
     @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> products = new ArrayList<>();
 

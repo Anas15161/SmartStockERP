@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @WebServlet(name = "DashboardServlet", urlPatterns = {"/dashboard"})
 public class DashboardServlet extends HttpServlet {
@@ -25,18 +24,13 @@ public class DashboardServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Product> allProducts = productRepository.findAll();
-        long totalProducts = allProducts.size();
-        long totalSuppliers = supplierRepository.findAll().size();
-        
-        // Products with stock <= alert threshold
-        List<Product> lowStockProducts = allProducts.stream()
-                .filter(p -> p.getStockQuantity() <= p.getAlertThreshold())
-                .collect(Collectors.toList());
+        long totalProducts = productRepository.count();
+        long totalSuppliers = supplierRepository.count();
+        List<Product> lowStockProducts = productRepository.findLowStockProducts();
         
         request.setAttribute("totalProducts", totalProducts);
         request.setAttribute("totalSuppliers", totalSuppliers);
-        request.setAttribute("lowStockCount", lowStockProducts.size());
+        request.setAttribute("lowStockCount", (long) lowStockProducts.size());
         request.setAttribute("lowStockProducts", lowStockProducts);
 
         request.getRequestDispatcher("/WEB-INF/views/dashboard.jsp").forward(request, response);

@@ -1,239 +1,122 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartStock ERP - Optimisez votre Supply Chain</title>
+    <title>SmartStock ERP | Next-Gen Supply Chain Intelligence</title>
     
-    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 
     <style>
         :root {
-            --primary-blue: #0a58ca;
-            --secondary-blue: #003366;
-            --success-green: #198754;
-            --light-bg: #f8f9fa;
-            --dark-footer: #1a1a1a;
-            --transition-smooth: all 0.3s ease-in-out;
+            --accent-blue: #0b5e9e;
+            --accent-green: #4caf50;
+            --light-bg: #f8fafc;
+            --text-dark: #0f172a;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-            color: #333;
+            background-color: white;
+            color: var(--text-dark);
         }
 
-        /* --- Navbar --- */
-        .navbar {
-            transition: var(--transition-smooth);
-            padding: 1rem 0;
-            background: transparent;
+        .hero-section {
+            padding: 160px 0 100px;
+            background: radial-gradient(circle at 10% 20%, rgba(11, 94, 158, 0.03) 0%, transparent 40%),
+                        radial-gradient(circle at 90% 80%, rgba(76, 175, 80, 0.03) 0%, transparent 40%);
+        }
+
+        .hero-badge {
+            background: #e0f2fe;
+            color: var(--accent-blue);
+            padding: 8px 20px;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(11, 94, 158, 0.1);
+        }
+
+        .feature-icon-box {
+            width: 64px; height: 64px;
+            border-radius: 18px;
+            background: var(--accent-blue);
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 20px rgba(11, 94, 158, 0.2);
+        }
+
+        .code-window {
+            background: #1e293b;
+            color: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            font-family: 'Courier New', monospace;
         }
 
         .navbar.scrolled {
-            background: white !important;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 0.5rem 0;
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05) !important;
         }
 
-        .navbar-brand {
-            font-weight: 700;
-            color: var(--primary-blue) !important;
-            font-size: 1.5rem;
-        }
-
-        .nav-link {
-            font-weight: 500;
-            color: #444 !important;
-            margin: 0 10px;
-        }
-
-        .nav-link:hover {
-            color: var(--primary-blue) !important;
-        }
-
-        /* --- Hero Section --- */
-        .hero {
-            position: relative;
-            height: 100vh;
-            min-height: 600px;
-            display: flex;
-            align-items: center;
-            background: linear-gradient(rgba(0, 51, 102, 0.7), rgba(0, 51, 102, 0.7)), 
-                        url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed; /* Effet Parallaxe */
-            color: white;
-            text-align: center;
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-        }
-
-        .hero p {
-            font-size: 1.25rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-        }
-
-        /* --- Stats Banner --- */
-        .stats-banner {
-            background: white;
-            padding: 2rem 0;
-            margin-top: -50px;
-            position: relative;
-            z-index: 10;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-
-        .stat-item h3 {
-            color: var(--primary-blue);
-            font-weight: 700;
-            font-size: 2.5rem;
-            margin-bottom: 0;
-        }
-
-        /* --- Features Section --- */
-        .section-padding {
-            padding: 100px 0;
-        }
-
-        .feature-card {
-            padding: 40px;
-            border-radius: 15px;
-            background: white;
-            transition: var(--transition-smooth);
-            height: 100%;
-            border: 1px solid #eee;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
-        }
-
-        .feature-icon {
-            font-size: 3rem;
-            color: var(--primary-blue);
-            margin-bottom: 20px;
-        }
-
-        /* --- API Section --- */
-        .api-section {
-            background-color: var(--light-bg);
-            border-left: 5px solid var(--primary-blue);
-        }
-
-        .code-snippet {
-            background: #2d3436;
-            color: #fab1a0;
-            padding: 20px;
-            border-radius: 10px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 0.9rem;
-        }
-
-        /* --- Pricing Section --- */
-        .pricing-card {
-            border: none;
-            border-radius: 20px;
-            transition: var(--transition-smooth);
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        }
-
-        .pricing-card:hover {
+        .plan-pro {
+            border: 2px solid var(--accent-blue) !important;
             transform: scale(1.05);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            z-index: 2;
         }
-
-        .pricing-header {
-            background: white;
-            padding: 30px;
-            text-align: center;
+        
+        .popular-badge {
+            position: absolute;
+            top: 20px;
+            right: -30px;
+            background: var(--accent-blue);
+            color: white;
+            padding: 5px 40px;
+            transform: rotate(45deg);
+            font-size: 0.7rem;
+            font-weight: 800;
         }
-
-        .price {
-            font-size: 3rem;
-            font-weight: 700;
-            color: var(--secondary-blue);
-        }
-
-        .btn-success-custom {
-            background-color: var(--success-green);
-            border: none;
-            padding: 12px 30px;
-            font-weight: 600;
-        }
-
-        /* --- Scroll Reveal Init --- */
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s ease-out;
-        }
-
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* --- Footer --- */
+        
         footer {
-            background: var(--dark-footer);
-            color: white;
-            padding: 60px 0 30px;
-        }
-
-        footer a {
-            color: #bbb;
-            text-decoration: none;
-            transition: var(--transition-smooth);
-        }
-
-        footer a:hover {
-            color: white;
+            background: #f1f5f9;
+            padding: 80px 0 40px;
+            border-top: 1px solid var(--border-color);
         }
     </style>
 </head>
 <body>
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg fixed-top" id="mainNavbar">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg fixed-top navbar-light bg-transparent" id="mainNav">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="#">
-                <img src="${pageContext.request.contextPath}/assets/logo.png" alt="Logo" height="40" class="me-2">
-                SmartStock ERP
+            <a class="navbar-brand d-flex align-items-center fw-800" href="#">
+                <i class="bi bi-box-seam-fill me-2" style="color: var(--accent-blue);"></i>SmartStock<span style="color: var(--accent-blue);">ERP</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item"><a class="nav-link" href="#accueil">Accueil</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#features">Fonctionnalités</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#api">API</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#tarifs">Tarifs</a></li>
-                    <li class="nav-item ms-lg-3">
+            <div class="collapse navbar-collapse" id="navContent">
+                <ul class="navbar-nav ms-auto align-items-center gap-2">
+                    <li class="nav-item"><a class="nav-link px-3" href="#home">Platform</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="#features">Solutions</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="#pricing">Pricing</a></li>
+                    <li class="nav-item ms-lg-4">
                         <c:choose>
                             <c:when test="${not empty sessionScope.user}">
-                                <a class="btn btn-primary rounded-pill px-4" href="${pageContext.request.contextPath}/dashboard">Tableau de bord</a>
+                                <a class="btn btn-primary px-4" href="dashboard">Launch Console</a>
                             </c:when>
                             <c:otherwise>
-                                <a class="btn btn-outline-primary rounded-pill px-4 me-2" href="${pageContext.request.contextPath}/login.jsp">Connexion</a>
-                                <a class="btn btn-primary rounded-pill px-4" href="${pageContext.request.contextPath}/login.jsp">Essai gratuit</a>
+                                <a class="btn btn-outline-primary px-4 me-2" href="login.jsp">Sign In</a>
+                                <a class="btn btn-primary px-4" href="login.jsp">Start Free</a>
                             </c:otherwise>
                         </c:choose>
                     </li>
@@ -242,168 +125,83 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero" id="accueil">
+    <!-- Hero -->
+    <section class="hero-section text-center" id="home">
         <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-10">
-                    <h1 class="display-3">Optimisez votre supply chain avec SmartStock ERP</h1>
-                    <p class="lead">Une architecture J2EE robuste pour une gestion de stocks intelligente, une traçabilité totale et une intégration API transparente.</p>
-                    <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
-                        <a href="#features" class="btn btn-primary btn-lg px-5 py-3 rounded-pill">Découvrir les fonctions</a>
-                        <c:choose>
-                            <c:when test="${not empty sessionScope.user}">
-                                <a href="${pageContext.request.contextPath}/dashboard" class="btn btn-outline-light btn-lg px-5 py-3 rounded-pill">Accéder au Dashboard</a>
-                            </c:when>
-                            <c:otherwise>
-                                <a href="${pageContext.request.contextPath}/login.jsp" class="btn btn-outline-light btn-lg px-5 py-3 rounded-pill">Démarrer maintenant</a>
-                            </c:otherwise>
-                        </c:choose>
-                    </div>
-                </div>
+            <div class="hero-badge" data-aos="fade-down">ENTERPRISE EDITION 2026</div>
+            <h1 class="display-3 fw-800 mb-4" data-aos="fade-up">
+                Professional <span style="color: var(--accent-blue);">Inventory</span> <br>
+                For Modern Businesses
+            </h1>
+            <p class="text-muted mb-5 mx-auto" style="max-width: 650px;" data-aos="fade-up" data-aos-delay="100">
+                A natural, high-performance J2EE ecosystem designed to optimize your warehouse operations, 
+                suppliers, and supply chain intelligence.
+            </p>
+            <div class="d-flex gap-3 justify-content-center" data-aos="fade-up" data-aos-delay="200">
+                <a href="login.jsp" class="btn btn-primary btn-lg px-5 py-3 shadow-lg">Get Started Free</a>
+                <a href="#features" class="btn btn-outline-secondary btn-lg px-5 py-3">Explore Features</a>
             </div>
         </div>
     </section>
 
-    <!-- Counter Section -->
-    <div class="container" id="counters">
-        <div class="stats-banner">
-            <div class="row text-center">
-                <div class="col-md-4 stat-item">
-                    <h3 class="counter" data-target="15000">0</h3>
-                    <p class="text-muted fw-bold">Produits Gérés</p>
-                </div>
-                <div class="col-md-4 stat-item">
-                    <h3 class="counter" data-target="450">0</h3>
-                    <p class="text-muted fw-bold">Fournisseurs Actifs</p>
-                </div>
-                <div class="col-md-4 stat-item">
-                    <h3 class="counter" data-target="250000">0</h3>
-                    <p class="text-muted fw-bold">Transactions / mois</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Features Section -->
-    <section class="section-padding" id="features">
-        <div class="container">
-            <div class="text-center mb-5 reveal">
-                <h2 class="fw-bold">Pourquoi choisir SmartStock ERP ?</h2>
-                <div class="bg-primary mx-auto mb-4" style="height: 3px; width: 60px;"></div>
-            </div>
+    <!-- Features -->
+    <section class="py-5" id="features">
+        <div class="container py-5">
             <div class="row g-4">
-                <div class="col-md-4 reveal">
-                    <div class="feature-card text-center">
-                        <i class="fas fa-chart-line feature-icon"></i>
-                        <h4>Tableau de Bord Intelligent</h4>
-                        <p class="text-muted">Visualisez vos KPIs en temps réel grâce à nos algorithmes de prédiction basés sur vos historiques de ventes.</p>
+                <div class="col-md-4" data-aos="fade-up">
+                    <div class="card p-5 h-100 border-0 shadow-sm">
+                        <div class="feature-icon-box"><i class="bi bi-speedometer2 text-white fs-3"></i></div>
+                        <h5 class="fw-bold">Real-time Analytics</h5>
+                        <p class="text-muted small">Monitor your stock levels with sub-second accuracy and automated alerts.</p>
                     </div>
                 </div>
-                <div class="col-md-4 reveal">
-                    <div class="feature-card text-center">
-                        <i class="fas fa-layer-group feature-icon"></i>
-                        <h4>Architecture MVC2</h4>
-                        <p class="text-muted">Une séparation stricte entre données et présentation pour une maintenance facilitée et une scalabilité accrue.</p>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="card p-5 h-100 border-0 shadow-sm">
+                        <div class="feature-icon-box" style="background: var(--accent-green);"><i class="bi bi-people text-white fs-3"></i></div>
+                        <h5 class="fw-bold">Supplier Portal</h5>
+                        <p class="text-muted small">Maintain strategic relationships with a unified portal for partner management.</p>
                     </div>
                 </div>
-                <div class="col-md-4 reveal">
-                    <div class="feature-card text-center">
-                        <i class="fas fa-shield-halved feature-icon"></i>
-                        <h4>Audit Technique</h4>
-                        <p class="text-muted">Journalisation complète des actions et gestion fine des permissions via des filtres de sécurité robustes.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- API & Integration Section -->
-    <section class="section-padding api-section" id="api">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6 mb-4 mb-lg-0 reveal">
-                    <span class="badge bg-primary mb-3">Interopérabilité SOA</span>
-                    <h2 class="fw-bold mb-4">API REST Intégrée (JAX-RS)</h2>
-                    <p class="lead">Connectez vos terminaux mobiles ou vos partenaires logistiques directement à votre instance ERP.</p>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Format JSON standardisé</li>
-                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Authentification JWT sécurisée</li>
-                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Documentation Swagger disponible</li>
-                    </ul>
-                </div>
-                <div class="col-lg-6 reveal">
-                    <div class="code-snippet">
-                        <span style="color: #55efc4;">GET</span> /api/products/stock<br>
-                        {<br>
-                        &nbsp;&nbsp;"id": "SKU-9921",<br>
-                        &nbsp;&nbsp;"label": "Module SmartSensor",<br>
-                        &nbsp;&nbsp;"quantity": 450,<br>
-                        &nbsp;&nbsp;"status": "IN_STOCK"<br>
-                        }
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card p-5 h-100 border-0 shadow-sm">
+                        <div class="feature-icon-box" style="background: #f59e0b;"><i class="bi bi-shield-lock text-white fs-3"></i></div>
+                        <h5 class="fw-bold">Secure Audits</h5>
+                        <p class="text-muted small">Full traceability with immutable logs powered by enterprise-grade JPA/Hibernate.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Pricing Section -->
-    <section class="section-padding" id="tarifs">
-        <div class="container">
-            <div class="text-center mb-5 reveal">
-                <h2 class="fw-bold">Plans & Tarification</h2>
-                <p class="text-muted">Une solution adaptée à la taille de votre entrepôt.</p>
-            </div>
-            <div class="row g-4">
-                <!-- Plan 1 -->
-                <div class="col-md-4 reveal">
-                    <div class="card pricing-card h-100">
-                        <div class="pricing-header">
-                            <h5 class="text-uppercase text-muted">Starter</h5>
-                            <div class="price">29€<small class="fs-6 text-muted">/mois</small></div>
-                        </div>
-                        <div class="card-body">
-                            <ul class="list-unstyled mb-4">
-                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Jusqu'à 500 produits</li>
-                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> 2 Utilisateurs</li>
-                                <li class="mb-2 text-muted"><i class="fas fa-times me-2"></i> API REST</li>
-                            </ul>
-                            <a href="${pageContext.request.contextPath}/login.jsp" class="btn btn-outline-primary w-100 py-2">Choisir Starter</a>
-                        </div>
+    <!-- Pricing -->
+    <section class="py-5 bg-light" id="pricing">
+        <div class="container py-5 text-center">
+            <h2 class="fw-800 mb-5">Professional Pricing Plans</h2>
+            <div class="row g-4 justify-content-center">
+                <div class="col-lg-4" data-aos="zoom-in">
+                    <div class="card p-5 h-100 border-0 shadow-sm">
+                        <h6 class="text-muted uppercase fw-bold">Starter</h6>
+                        <div class="display-4 fw-800 my-3">290 DH <span class="fs-6 text-muted">/mo</span></div>
+                        <ul class="list-unstyled text-start mt-4 mb-5">
+                            <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i> 500 Products</li>
+                            <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i> 2 Users</li>
+                            <li class="mb-2 text-muted"><i class="bi bi-x text-danger me-2"></i> Advanced API</li>
+                        </ul>
+                        <a href="login.jsp" class="btn btn-outline-primary w-100 py-3 rounded-pill">Select Plan</a>
                     </div>
                 </div>
-                <!-- Plan 2 (Featured) -->
-                <div class="col-md-4 reveal">
-                    <div class="card pricing-card h-100 border-primary border-2">
-                        <div class="pricing-header bg-primary text-white">
-                            <h5 class="text-uppercase">Pro</h5>
-                            <div class="price text-white">89€<small class="fs-6 opacity-75">/mois</small></div>
-                        </div>
-                        <div class="card-body">
-                            <ul class="list-unstyled mb-4">
-                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Produits illimités</li>
-                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> 10 Utilisateurs</li>
-                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> API REST incluse</li>
-                            </ul>
-                            <a href="${pageContext.request.contextPath}/login.jsp" class="btn btn-success-custom text-white w-100 py-2">Choisir Pro</a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Plan 3 -->
-                <div class="col-md-4 reveal">
-                    <div class="card pricing-card h-100">
-                        <div class="pricing-header">
-                            <h5 class="text-uppercase text-muted">Enterprise</h5>
-                            <div class="price">Sur devis</div>
-                        </div>
-                        <div class="card-body">
-                            <ul class="list-unstyled mb-4">
-                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Utilisateurs illimités</li>
-                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Support 24/7</li>
-                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Installation On-Premise</li>
-                            </ul>
-                            <a href="${pageContext.request.contextPath}/login.jsp" class="btn btn-outline-primary w-100 py-2">Contacter l'équipe</a>
-                        </div>
+                <div class="col-lg-4" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="card p-5 h-100 plan-pro shadow-lg position-relative">
+                        <div class="popular-badge">Preferred</div>
+                        <h6 class="text-muted uppercase fw-bold">Professional</h6>
+                        <div class="display-4 fw-800 my-3" style="color: var(--accent-blue);">890 DH <span class="fs-6 text-muted">/mo</span></div>
+                        <ul class="list-unstyled text-start mt-4 mb-5">
+                            <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i> Unlimited Products</li>
+                            <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i> 10 Users</li>
+                            <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i> REST API Included</li>
+                            <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i> AI Demand Prediction</li>
+                        </ul>
+                        <a href="login.jsp" class="btn btn-primary w-100 py-3 rounded-pill">Get Started Now</a>
                     </div>
                 </div>
             </div>
@@ -411,120 +209,47 @@
     </section>
 
     <!-- Footer -->
-    <footer>
+    <footer class="mt-5">
         <div class="container">
             <div class="row">
-                <div class="col-md-4 mb-4">
-                    <h5 class="fw-bold mb-4">SmartStock ERP</h5>
-                    <p class="text-muted small">Solution ERP spécialisée dans la supply chain, développée pour la performance et la fiabilité industrielle.</p>
+                <div class="col-md-4">
+                    <h5 class="fw-800 mb-4" style="color: var(--accent-blue);">SmartStock ERP</h5>
+                    <p class="text-muted small">Industrial performance, natural intelligence. Build your warehouse ecosystem on the foundation of 2026 ERP technology.</p>
                 </div>
-                <div class="col-md-2 mb-4">
-                    <h6 class="fw-bold mb-4">Liens Rapides</h6>
-                    <ul class="list-unstyled small">
-                        <li><a href="#accueil">Accueil</a></li>
-                        <li><a href="#features">Fonctionnalités</a></li>
-                        <li><a href="#tarifs">Tarifs</a></li>
+                <div class="col-md-2 offset-md-2">
+                    <h6 class="fw-bold mb-4">Product</h6>
+                    <ul class="list-unstyled small text-muted">
+                        <li class="mb-2">Features</li>
+                        <li class="mb-2">Pricing</li>
+                        <li class="mb-2">Console</li>
                     </ul>
                 </div>
-                <div class="col-md-3 mb-4">
-                    <h6 class="fw-bold mb-4">Technologie</h6>
-                    <ul class="list-unstyled small">
-                        <li>Java Enterprise Edition</li>
-                        <li>Hibernate / JPA</li>
-                        <li>JAX-RS (REST API)</li>
-                    </ul>
-                </div>
-                <div class="col-md-3 mb-4">
-                    <h6 class="fw-bold mb-4">Contact</h6>
-                    <p class="text-muted small"><i class="fas fa-envelope me-2"></i> contact@smartstock.tech</p>
-                    <div class="mt-3">
-                        <a href="#" class="me-3"><i class="fab fa-linkedin fa-lg"></i></a>
-                        <a href="#" class="me-3"><i class="fab fa-github fa-lg"></i></a>
+                <div class="col-md-4 text-md-end">
+                    <h6 class="fw-bold mb-4">Global Network</h6>
+                    <div class="d-flex gap-3 justify-content-md-end fs-4">
+                        <i class="bi bi-linkedin" style="color: var(--accent-blue);"></i>
+                        <i class="bi bi-github"></i>
+                        <i class="bi bi-twitter-x"></i>
                     </div>
                 </div>
             </div>
-            <hr class="mt-4 border-secondary">
-            <div class="text-center text-muted small mt-4">
-                &copy; 2026 SmartStock ERP. Tous droits réservés.
-            </div>
+            <hr class="my-5 opacity-10">
+            <p class="text-center text-muted small">&copy; 2026 SmartStock ERP Global. All rights reserved.</p>
         </div>
     </footer>
 
-    <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-
-            // 1. Navbar Change on Scroll
-            const navbar = document.getElementById('mainNavbar');
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 50) {
-                    navbar.classList.add('scrolled');
-                } else {
-                    navbar.classList.remove('scrolled');
-                }
-            });
-
-            // 2. Smooth Scrolling for Navbar Links
-            document.querySelectorAll('a.nav-link, a.btn').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    const href = this.getAttribute('href');
-                    if (href && href.startsWith('#')) {
-                        e.preventDefault();
-                        const targetId = href.substring(1);
-                        const targetElement = document.getElementById(targetId);
-                        if (targetElement) {
-                            window.scrollTo({
-                                top: targetElement.offsetTop - 70,
-                                behavior: 'smooth'
-                            });
-                        }
-                    }
-                });
-            });
-
-            // 3. Scroll Reveal Animations (IntersectionObserver)
-            const revealElements = document.querySelectorAll('.reveal');
-            const revealObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('active');
-                    }
-                });
-            }, { threshold: 0.1 });
-
-            revealElements.forEach(el => revealObserver.observe(el));
-
-            // 4. Dynamic Counters Animation
-            const counters = document.querySelectorAll('.counter');
-            const speed = 200;
-
-            const animateCounter = (counter) => {
-                const target = +counter.getAttribute('data-target');
-                const count = +counter.innerText;
-                const increment = target / speed;
-
-                if (count < target) {
-                    counter.innerText = Math.ceil(count + increment);
-                    setTimeout(() => animateCounter(counter), 1);
-                } else {
-                    counter.innerText = target.toLocaleString();
-                }
-            };
-
-            // Trigger counters when they come into view
-            const counterSection = document.getElementById('counters');
-            let started = false;
-            const counterObserver = new IntersectionObserver((entries) => {
-                if (entries[0] && entries[0].isIntersecting && !started) {
-                    counters.forEach(counter => animateCounter(counter));
-                    started = true;
-                }
-            }, { threshold: 0.5 });
-
-            if (counterSection) counterObserver.observe(counterSection);
-        });
+        AOS.init({ duration: 800, once: true });
+        window.onscroll = function() {
+            var nav = document.getElementById('mainNav');
+            if (window.pageYOffset > 50) {
+                nav.classList.add("scrolled");
+            } else {
+                nav.classList.remove("scrolled");
+            }
+        };
     </script>
 </body>
 </html>

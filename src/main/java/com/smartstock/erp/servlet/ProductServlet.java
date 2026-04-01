@@ -74,8 +74,24 @@ public class ProductServlet extends HttpServlet {
     }
 
     private void listProducts(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Product> listProduct = productRepository.findAll();
+        int page = 1;
+        int size = 10;
+        
+        String pageParam = request.getParameter("page");
+        if (pageParam != null && !pageParam.isEmpty()) {
+            page = Integer.parseInt(pageParam);
+        }
+
+        long totalProducts = productRepository.count();
+        int totalPages = (int) Math.ceil((double) totalProducts / size);
+        
+        List<Product> listProduct = productRepository.findPaginated(page, size);
+        
         request.setAttribute("listProduct", listProduct);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("totalItems", totalProducts);
+        
         request.getRequestDispatcher("/products/list.jsp").forward(request, response);
     }
 

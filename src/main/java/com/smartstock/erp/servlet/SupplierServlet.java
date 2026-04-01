@@ -66,8 +66,24 @@ public class SupplierServlet extends HttpServlet {
     }
 
     private void listSuppliers(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Supplier> listSupplier = supplierRepository.findAll();
+        int page = 1;
+        int size = 10;
+        
+        String pageParam = request.getParameter("page");
+        if (pageParam != null && !pageParam.isEmpty()) {
+            page = Integer.parseInt(pageParam);
+        }
+
+        long totalSuppliers = supplierRepository.count();
+        int totalPages = (int) Math.ceil((double) totalSuppliers / size);
+        
+        List<Supplier> listSupplier = supplierRepository.findPaginated(page, size);
+        
         request.setAttribute("listSupplier", listSupplier);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("totalItems", totalSuppliers);
+        
         request.getRequestDispatcher("/suppliers/list.jsp").forward(request, response);
     }
 

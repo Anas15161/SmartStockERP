@@ -27,11 +27,12 @@ public class AuthenticationFilter implements Filter {
 
         boolean isLoginRequest = httpRequest.getRequestURI().equals(loginURI) || httpRequest.getRequestURI().equals(loginJspURI);
         boolean isPublicPage = httpRequest.getRequestURI().equals(indexURI) || httpRequest.getRequestURI().equals(indexJspURI);
+        boolean isApiRequest = httpRequest.getRequestURI().startsWith(httpRequest.getContextPath() + "/api");
         boolean isStaticResource = httpRequest.getRequestURI().startsWith(httpRequest.getContextPath() + "/css") ||
                                     httpRequest.getRequestURI().startsWith(httpRequest.getContextPath() + "/js") ||
                                     httpRequest.getRequestURI().startsWith(httpRequest.getContextPath() + "/assets");
 
-        if (isLoggedIn || isLoginRequest || isPublicPage || isStaticResource) {
+        if (isLoggedIn || isLoginRequest || isPublicPage || isApiRequest || isStaticResource) {
             chain.doFilter(request, response);
         } else {
             httpResponse.sendRedirect(loginURI);

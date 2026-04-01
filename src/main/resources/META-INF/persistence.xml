@@ -8,19 +8,27 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <class>com.smartstock.erp.model.Product</class>
         <class>com.smartstock.erp.model.Supplier</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
         <properties>
             <!-- Oracle Database Configuration -->
             <property name="jakarta.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:oracle:thin:@localhost:1521/XEPDB1"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:oracle:thin:@127.0.0.1:1521/XEPDB1"/>
             <property name="jakarta.persistence.jdbc.user" value="smartstock"/>
             <property name="jakarta.persistence.jdbc.password" value="1234"/>
 
             <!-- Hibernate Settings -->
             <property name="hibernate.dialect" value="org.hibernate.dialect.OracleDialect"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
-            <property name="hibernate.show_sql" value="true"/>
-            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.show_sql" value="false"/>
+            <property name="hibernate.format_sql" value="false"/>
+
+            <!-- Performance Tuning -->
+            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
+            <property name="hibernate.jdbc.batch_size" value="30"/>
+            <property name="hibernate.order_inserts" value="true"/>
+            <property name="hibernate.order_updates" value="true"/>
+            <property name="hibernate.connection.provider_disables_autocommit" value="true"/>
         </properties>
     </persistence-unit>
 </persistence>
