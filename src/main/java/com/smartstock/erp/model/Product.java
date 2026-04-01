@@ -1,6 +1,7 @@
 package com.smartstock.erp.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -18,22 +19,22 @@ public class Product implements Serializable {
     private Long id;
 
     @NotNull
-    @Size(min = 2, max = 100)
+    @Size(min = 3, max = 100, message = "The label must be between 3 and 100 characters")
     @Column(nullable = false, length = 100)
     private String label;
 
     @NotNull
-    @Min(0)
+    @Min(value = 0, message = "Stock quantity cannot be negative")
     @Column(name = "stock_quantity", nullable = false)
     private Integer stockQuantity;
 
     @NotNull
-    @Min(0)
+    @Min(value = 0, message = "Alert threshold cannot be negative")
     @Column(name = "alert_threshold", nullable = false)
     private Integer alertThreshold;
 
     @NotNull
-    @Min(0)
+    @DecimalMin(value = "0.0", inclusive = false, message = "Unit price must be greater than zero")
     @Column(name = "unit_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal unitPrice;
 

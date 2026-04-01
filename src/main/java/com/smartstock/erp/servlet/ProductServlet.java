@@ -4,6 +4,8 @@ import com.smartstock.erp.model.Product;
 import com.smartstock.erp.model.Supplier;
 import com.smartstock.erp.repository.ProductRepository;
 import com.smartstock.erp.repository.SupplierRepository;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -13,7 +15,10 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @WebServlet(name = "ProductServlet", urlPatterns = {"/products"})
 public class ProductServlet extends HttpServlet {
@@ -23,6 +28,9 @@ public class ProductServlet extends HttpServlet {
 
     @Inject
     private SupplierRepository supplierRepository;
+
+    @Inject
+    private Validator validator;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -86,19 +94,42 @@ public class ProductServlet extends HttpServlet {
         request.getRequestDispatcher("/products/edit.jsp").forward(request, response);
     }
 
-    private void insertProduct(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void insertProduct(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Product newProduct = new Product();
         mapRequestToProduct(request, newProduct);
-        productRepository.create(newProduct);
-        response.sendRedirect("products");
+
+        Set<ConstraintViolation<Product>> violations = validator.validate(newProduct);
+        if (violations.isEmpty()) {
+            productRepository.create(newProduct);
+            response.sendRedirect("products");
+        } else {
+            handleValidationErrors(request, response, newProduct, violations, "/products/add.jsp");
+        }
     }
 
-    private void updateProduct(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void updateProduct(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long id = Long.parseLong(request.getParameter("id"));
         Product product = productRepository.findById(id);
         mapRequestToProduct(request, product);
-        productRepository.update(product);
-        response.sendRedirect("products");
+
+        Set<ConstraintViolation<Product>> violations = validator.validate(product);
+        if (violations.isEmpty()) {
+            productRepository.update(product);
+            response.sendRedirect("products");
+        } else {
+            handleValidationErrors(request, response, product, violations, "/products/edit.jsp");
+        }
+    }
+
+    private void handleValidationErrors(HttpServletRequest request, HttpServletResponse response, Product product, Set<ConstraintViolation<Product>> violations, String forwardTo) throws ServletException, IOException {
+        Map<String, String> errors = new HashMap<>();
+        for (ConstraintViolation<Product> violation : violations) {
+            errors.put(violation.getPropertyPath().toString(), violation.getMessage());
+        }
+        request.setAttribute("errors", errors);
+        request.setAttribute("product", product);
+        request.setAttribute("listSupplier", supplierRepository.findAll());
+        request.getRequestDispatcher(forwardTo).forward(request, response);
     }
 
     private void deleteProduct(HttpServletRequest request, HttpServletResponse response) throws IOException {
