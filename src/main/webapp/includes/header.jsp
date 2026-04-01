@@ -7,16 +7,18 @@
     <meta charset="UTF-8">
     <title>SmartStock ERP - Product Management</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
     <style>
-        body { background-color: #f8f9fa; }
-        .container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-top: 2rem; }
+        .navbar-brand { font-size: 1.4rem; color: #fff !important; }
+        .nav-link { font-weight: 500; opacity: 0.9; }
+        .nav-link:hover { opacity: 1; color: var(--secondary-green) !important; }
     </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+<nav class="navbar navbar-expand-lg navbar-dark shadow-lg sticky-top mb-4">
     <div class="container-fluid px-4">
         <a class="navbar-brand fw-bold" href="${pageContext.request.contextPath}/index.jsp">
-            <i class="bi bi-box-seam me-2"></i>SmartStock ERP
+            <i class="bi bi-box-seam-fill me-2" style="color: var(--secondary-green);"></i>SMARTSTOCK ERP
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
@@ -24,8 +26,18 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
+                    <a class="nav-link" href="${pageContext.request.contextPath}/dashboard">
+                        <i class="bi bi-speedometer2 me-1"></i>Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="${pageContext.request.contextPath}/products">
                         <i class="bi bi-grid-3x3-gap me-1"></i>Products
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="${pageContext.request.contextPath}/suppliers">
+                        <i class="bi bi-truck me-1"></i>Suppliers
                     </a>
                 </li>
             </ul>
