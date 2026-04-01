@@ -16,10 +16,10 @@
 </head>
 <body>
     <!-- System Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-top mb-5">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top mb-5" style="background: var(--brand-blue-dark) !important; border-bottom: 3px solid var(--brand-green); padding: 12px 0;">
         <div class="container-fluid px-lg-5">
             <a class="navbar-brand d-flex align-items-center fw-800" href="${pageContext.request.contextPath}/index.jsp">
-                <img src="${pageContext.request.contextPath}/assets/logo.png" alt="SmartStock ERP" style="height: 32px;">
+                <img src="${pageContext.request.contextPath}/assets/logo.png" alt="SmartStock ERP" style="height: 36px;">
             </a>
             
             <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#systemNav">
@@ -28,20 +28,32 @@
             
             <div class="collapse navbar-collapse" id="systemNav">
                 <ul class="navbar-nav mx-auto bg-glass-nav rounded-pill px-3 py-1 gap-1">
+<%--                    <li class="nav-item">--%>
+<%--                        <a class="nav-link px-3 rounded-pill" --%>
+<%--                           href="${pageContext.request.contextPath}/presentation.jsp">--%>
+<%--                            <i class="bi bi-display me-2"></i>Présentation--%>
+<%--                        </a>--%>
+<%--                    </li>--%>
                     <li class="nav-item">
-                        <a class="nav-link px-3 rounded-pill ${request.requestURI.contains('dashboard') ? 'active bg-soft-primary' : ''}" 
-                           href="${pageContext.request.contextPath}/dashboard">
-                            <i class="bi bi-grid-1x2 me-2"></i>Dashboard
+                        <a class="nav-link px-3 rounded-pill" 
+                           href="${pageContext.request.contextPath}/documentation.jsp">
+                            <i class="bi bi-journal-code me-2"></i>Documentation
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link px-3 rounded-pill ${request.requestURI.contains('products') ? 'active bg-soft-primary' : ''}" 
+                        <a class="nav-link px-3 rounded-pill ${request.requestURI.contains('dashboard') ? 'active bg-success' : ''}" 
+                           href="${pageContext.request.contextPath}/dashboard">
+                            <i class="bi bi-grid-1x2 me-2"></i>Terminal
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3 rounded-pill ${request.requestURI.contains('products') ? 'active bg-success' : ''}" 
                            href="${pageContext.request.contextPath}/products">
                             <i class="bi bi-box2 me-2"></i>Inventory
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link px-3 rounded-pill ${request.requestURI.contains('suppliers') ? 'active bg-soft-primary' : ''}" 
+                        <a class="nav-link px-3 rounded-pill ${request.requestURI.contains('suppliers') ? 'active bg-success' : ''}" 
                            href="${pageContext.request.contextPath}/suppliers">
                             <i class="bi bi-truck me-2"></i>Partners
                         </a>
@@ -53,12 +65,12 @@
                         <div class="dropdown">
                             <button class="btn btn-link text-decoration-none d-flex align-items-center gap-2 p-0 shadow-none" 
                                     type="button" data-bs-toggle="dropdown">
-                                <div class="bg-soft-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
-                                    <i class="bi bi-person text-primary"></i>
+                                <div class="bg-success rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);">
+                                    <i class="bi bi-person text-white"></i>
                                 </div>
                                 <div class="text-start d-none d-xl-block">
                                     <div class="text-white small fw-bold lh-1">${sessionScope.user.split('@')[0]}</div>
-                                    <div class="smallest text-dim opacity-75">Administrator</div>
+                                    <div class="smallest text-white opacity-75">Administrator</div>
                                 </div>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end glass-card border-0 p-2 shadow-lg mt-3">

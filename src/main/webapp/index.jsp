@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartStock ERP | Next-Gen Supply Chain Intelligence</title>
+    <title>SmartStock ERP | Intelligent Supply Chain Ecosystem</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
@@ -14,109 +14,85 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 
     <style>
-        :root {
-            --accent-blue: #0b5e9e;
-            --accent-green: #4caf50;
-            --light-bg: #f8fafc;
-            --text-dark: #0f172a;
+        .hero-wallpaper {
+            background-image: url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2070&auto=format&fit=crop');
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            margin-top: -80px; /* Offset for transparent nav */
         }
-
-        body {
-            background-color: white;
-            color: var(--text-dark);
-        }
-
-        .hero-section {
-            padding: 160px 0 100px;
-            background: radial-gradient(circle at 10% 20%, rgba(11, 94, 158, 0.03) 0%, transparent 40%),
-                        radial-gradient(circle at 90% 80%, rgba(76, 175, 80, 0.03) 0%, transparent 40%);
-        }
-
-        .hero-badge {
-            background: #e0f2fe;
-            color: var(--accent-blue);
-            padding: 8px 20px;
-            border-radius: 100px;
-            font-weight: 700;
-            font-size: 0.8rem;
-            display: inline-block;
-            margin-bottom: 2rem;
-            border: 1px solid rgba(11, 94, 158, 0.1);
-        }
-
-        .feature-icon-box {
-            width: 64px; height: 64px;
-            border-radius: 18px;
-            background: var(--accent-blue);
-            display: flex; align-items: center; justify-content: center;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 10px 20px rgba(11, 94, 158, 0.2);
-        }
-
-        .code-window {
-            background: #1e293b;
-            color: white;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
-            font-family: 'Courier New', monospace;
-        }
-
-        .navbar.scrolled {
-            background: rgba(255, 255, 255, 0.95) !important;
+        
+        .floating-badge {
+            background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(10px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05) !important;
+            padding: 10px 24px;
+            border-radius: 100px;
+            border: 1px solid rgba(11, 94, 158, 0.1);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            color: var(--brand-blue);
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
         }
 
-        .plan-pro {
-            border: 2px solid var(--accent-blue) !important;
-            transform: scale(1.05);
-            z-index: 2;
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
         }
-        
-        .popular-badge {
-            position: absolute;
-            top: 20px;
-            right: -30px;
-            background: var(--accent-blue);
-            color: white;
-            padding: 5px 40px;
-            transform: rotate(45deg);
-            font-size: 0.7rem;
-            font-weight: 800;
+
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 24px;
+            text-align: center;
+            border-bottom: 4px solid var(--brand-blue);
         }
-        
-        footer {
+
+        .icon-box {
+            width: 60px; height: 60px;
             background: #f1f5f9;
-            padding: 80px 0 40px;
-            border-top: 1px solid var(--border-color);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            transition: var(--transition-smooth);
+        }
+
+        .card:hover .icon-box {
+            background: var(--brand-blue);
+            color: white !important;
+            transform: rotate(10deg);
         }
     </style>
 </head>
 <body>
 
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg fixed-top navbar-light bg-transparent" id="mainNav">
+    <nav class="navbar navbar-expand-lg fixed-top navbar-light" id="mainNav">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center fw-800" href="#">
-                <img src="${pageContext.request.contextPath}/assets/logo.png" alt="SmartStock ERP" style="height: 32px;">
+                <img src="${pageContext.request.contextPath}/assets/logo.png" alt="SmartStock ERP" style="height: 38px;">
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navContent">
                 <ul class="navbar-nav ms-auto align-items-center gap-2">
-                    <li class="nav-item"><a class="nav-link px-3" href="#home">Platform</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="#home">Ecosystem</a></li>
                     <li class="nav-item"><a class="nav-link px-3" href="#features">Solutions</a></li>
                     <li class="nav-item"><a class="nav-link px-3" href="#pricing">Pricing</a></li>
                     <li class="nav-item ms-lg-4">
                         <c:choose>
                             <c:when test="${not empty sessionScope.user}">
-                                <a class="btn btn-primary px-4" href="dashboard">Launch Console</a>
+                                <a class="btn btn-primary px-4 shadow" href="dashboard">Launch Terminal <i class="bi bi-cpu ms-2"></i></a>
                             </c:when>
                             <c:otherwise>
-                                <a class="btn btn-outline-primary px-4 me-2" href="login.jsp">Sign In</a>
-                                <a class="btn btn-primary px-4" href="login.jsp">Start Free</a>
+                                <a class="btn btn-outline-dark px-4 me-2" href="login.jsp">Sign In</a>
+                                <a class="btn btn-primary px-4 shadow" href="login.jsp">Deploy Now <i class="bi bi-rocket-takeoff ms-2"></i></a>
                             </c:otherwise>
                         </c:choose>
                     </li>
@@ -125,48 +101,114 @@
         </div>
     </nav>
 
-    <!-- Hero -->
-    <section class="hero-section text-center" id="home">
-        <div class="container">
-            <div class="hero-badge" data-aos="fade-down">ENTERPRISE EDITION 2026</div>
-            <h1 class="display-3 fw-800 mb-4" data-aos="fade-up">
-                Professional <span style="color: var(--accent-blue);">Inventory</span> <br>
-                For Modern Businesses
-            </h1>
-            <p class="text-muted mb-5 mx-auto" style="max-width: 650px;" data-aos="fade-up" data-aos-delay="100">
-                A natural, high-performance J2EE ecosystem designed to optimize your warehouse operations, 
-                suppliers, and supply chain intelligence.
-            </p>
-            <div class="d-flex gap-3 justify-content-center" data-aos="fade-up" data-aos-delay="200">
-                <a href="login.jsp" class="btn btn-primary btn-lg px-5 py-3 shadow-lg">Get Started Free</a>
-                <a href="#features" class="btn btn-outline-secondary btn-lg px-5 py-3">Explore Features</a>
+    <!-- Hero Section -->
+    <section class="hero-wallpaper" id="home">
+        <div class="container hero-content">
+            <div class="row align-items-center">
+                <div class="col-lg-7" data-aos="fade-right">
+
+                    <h1 class="hero-title fw-800">
+                        Intelligent <span class="text-gradient-blue">Inventory</span> <br>
+                        Mastery Simplified.
+                    </h1>
+                    <p class="lead fw-600 mb-5 pe-lg-5" style="color: #334155; line-height: 1.8; text-shadow: 0 0 20px rgba(255,255,255,0.5);">
+                        The ultimate J2EE backbone for modern supply chains. Orchestrate products, 
+                        suppliers, and logistics with sub-second precision and predictive intelligence.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <a href="login.jsp" class="btn btn-primary btn-lg px-5 py-3 shadow-lg">Start Building Free</a>
+                        <a href="#features" class="btn btn-outline-secondary btn-lg px-4 py-3">
+                            <i class="bi bi-play-circle me-2"></i> Watch Demo
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-5 d-none d-lg-block" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="glass-card p-4 animate-float">
+                        <div class="d-flex justify-content-between mb-4">
+                            <span class="fw-bold"><i class="bi bi-graph-up-arrow text-success me-2"></i>Live Stock Velocity</span>
+                            <span class="badge bg-soft-success rounded-pill">+24.5%</span>
+                        </div>
+                        <div class="progress mb-3" style="height: 8px;">
+                            <div class="progress-bar bg-primary" style="width: 75%"></div>
+                        </div>
+                        <div class="d-flex justify-content-between small text-muted mb-4">
+                            <span>Warehouse Capacity</span>
+                            <span>75% Optimal</span>
+                        </div>
+                        <div class="p-3 bg-white rounded-3 border">
+                            <div class="d-flex gap-3 align-items-center">
+                                <div class="bg-soft-primary p-2 rounded"><i class="bi bi-box-seam text-primary"></i></div>
+                                <div>
+                                    <div class="fw-bold small">Latest Shipment</div>
+                                    <div class="smallest text-muted">SKU-90210 Arrived</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Features -->
-    <section class="py-5" id="features">
+    <!-- Stats Section -->
+    <section class="py-5">
         <div class="container py-5">
             <div class="row g-4">
+                <div class="col-md-3" data-aos="fade-up">
+                    <div class="stat-card">
+                        <div class="display-5 fw-800 text-primary">99.9%</div>
+                        <div class="small text-muted fw-bold">UPTIME GUARANTEE</div>
+                    </div>
+                </div>
+                <div class="col-md-3" data-aos="fade-up" data-aos-delay="100">
+                    <div class="stat-card" style="border-color: var(--brand-green);">
+                        <div class="display-5 fw-800 text-success">15M+</div>
+                        <div class="small text-muted fw-bold">SKUs MANAGED</div>
+                    </div>
+                </div>
+                <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
+                    <div class="stat-card">
+                        <div class="display-5 fw-800 text-primary">2.4s</div>
+                        <div class="small text-muted fw-bold">AVG. PROCESSING</div>
+                    </div>
+                </div>
+                <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
+                    <div class="stat-card" style="border-color: var(--brand-green);">
+                        <div class="display-5 fw-800 text-success">50k+</div>
+                        <div class="small text-muted fw-bold">ACTIVE WAREHOUSES</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Solutions -->
+    <section class="py-5 bg-white" id="features">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h6 class="text-primary fw-bold text-uppercase tracking-widest">Solutions Ecosystem</h6>
+                <h2 class="display-5 fw-800">Precision Architecture</h2>
+            </div>
+            <div class="row g-4">
                 <div class="col-md-4" data-aos="fade-up">
-                    <div class="card p-5 h-100 border-0 shadow-sm">
-                        <div class="feature-icon-box"><i class="bi bi-speedometer2 text-white fs-3"></i></div>
-                        <h5 class="fw-bold">Real-time Analytics</h5>
-                        <p class="text-muted small">Monitor your stock levels with sub-second accuracy and automated alerts.</p>
+                    <div class="card p-5 h-100 border-0 shadow-sm text-center">
+                        <div class="icon-box text-primary fs-3"><i class="bi bi-lightning-charge"></i></div>
+                        <h5 class="fw-bold mb-3">Instant Sync</h5>
+                        <p class="text-muted small">Distributed state management ensuring all terminals reflect stock changes in milliseconds.</p>
                     </div>
                 </div>
                 <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
-                    <div class="card p-5 h-100 border-0 shadow-sm">
-                        <div class="feature-icon-box" style="background: var(--accent-green);"><i class="bi bi-people text-white fs-3"></i></div>
-                        <h5 class="fw-bold">Supplier Portal</h5>
-                        <p class="text-muted small">Maintain strategic relationships with a unified portal for partner management.</p>
+                    <div class="card p-5 h-100 border-0 shadow-sm text-center">
+                        <div class="icon-box text-success fs-3"><i class="bi bi-shield-check"></i></div>
+                        <h5 class="fw-bold mb-3">Secure Ledger</h5>
+                        <p class="text-muted small">Immutable transaction logging with enterprise-grade encryption and full audit trails.</p>
                     </div>
                 </div>
                 <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
-                    <div class="card p-5 h-100 border-0 shadow-sm">
-                        <div class="feature-icon-box" style="background: #f59e0b;"><i class="bi bi-shield-lock text-white fs-3"></i></div>
-                        <h5 class="fw-bold">Secure Audits</h5>
-                        <p class="text-muted small">Full traceability with immutable logs powered by enterprise-grade JPA/Hibernate.</p>
+                    <div class="card p-5 h-100 border-0 shadow-sm text-center">
+                        <div class="icon-box text-warning fs-3"><i class="bi bi-cpu"></i></div>
+                        <h5 class="fw-bold mb-3">AI Prediction</h5>
+                        <p class="text-muted small">Neural-network driven demand forecasting to eliminate overstock and stockouts.</p>
                     </div>
                 </div>
             </div>
@@ -174,34 +216,32 @@
     </section>
 
     <!-- Pricing -->
-    <section class="py-5 bg-light" id="pricing">
+    <section class="py-5" id="pricing" style="background: #f1f5f9;">
         <div class="container py-5 text-center">
-            <h2 class="fw-800 mb-5">Professional Pricing Plans</h2>
+            <h2 class="display-5 fw-800 mb-5">Scale Your Enterprise</h2>
             <div class="row g-4 justify-content-center">
                 <div class="col-lg-4" data-aos="zoom-in">
                     <div class="card p-5 h-100 border-0 shadow-sm">
-                        <h6 class="text-muted uppercase fw-bold">Starter</h6>
-                        <div class="display-4 fw-800 my-3">290 DH <span class="fs-6 text-muted">/mo</span></div>
-                        <ul class="list-unstyled text-start mt-4 mb-5">
-                            <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i> 500 Products</li>
-                            <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i> 2 Users</li>
-                            <li class="mb-2 text-muted"><i class="bi bi-x text-danger me-2"></i> Advanced API</li>
+                        <h6 class="text-muted text-uppercase fw-bold small">Lite Edition</h6>
+                        <div class="display-5 fw-800 my-4">290 DH <span class="fs-6 text-muted">/mo</span></div>
+                        <ul class="list-unstyled text-start mb-5 gap-3 d-grid">
+                            <li><i class="bi bi-check-circle-fill text-primary me-2"></i> 1,000 Stock Keeping Units</li>
+                            <li><i class="bi bi-check-circle-fill text-primary me-2"></i> 3 Management Terminals</li>
+                            <li><i class="bi bi-dash-circle text-muted me-2"></i> AI Prediction Disabled</li>
                         </ul>
-                        <a href="login.jsp" class="btn btn-outline-primary w-100 py-3 rounded-pill">Select Plan</a>
+                        <a href="login.jsp" class="btn btn-outline-primary w-100 py-3">Select Lite</a>
                     </div>
                 </div>
                 <div class="col-lg-4" data-aos="zoom-in" data-aos-delay="100">
-                    <div class="card p-5 h-100 plan-pro shadow-lg position-relative">
-                        <div class="popular-badge">Preferred</div>
-                        <h6 class="text-muted uppercase fw-bold">Professional</h6>
-                        <div class="display-4 fw-800 my-3" style="color: var(--accent-blue);">890 DH <span class="fs-6 text-muted">/mo</span></div>
-                        <ul class="list-unstyled text-start mt-4 mb-5">
-                            <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i> Unlimited Products</li>
-                            <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i> 10 Users</li>
-                            <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i> REST API Included</li>
-                            <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i> AI Demand Prediction</li>
+                    <div class="card p-5 h-100 border-0 shadow-lg" style="background: var(--brand-blue); color: white;">
+                        <h6 class="text-uppercase fw-bold small opacity-75">Enterprise Pro</h6>
+                        <div class="display-5 fw-800 my-4">890 DH <span class="fs-6 opacity-75">/mo</span></div>
+                        <ul class="list-unstyled text-start mb-5 gap-3 d-grid">
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i> Unlimited Infrastructure</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i> Global Node Replication</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i> Full Predictive Engine</li>
                         </ul>
-                        <a href="login.jsp" class="btn btn-primary w-100 py-3 rounded-pill">Get Started Now</a>
+                        <a href="login.jsp" class="btn btn-light w-100 py-3 fw-bold text-primary">Deploy Pro Now</a>
                     </div>
                 </div>
             </div>
@@ -209,39 +249,29 @@
     </section>
 
     <!-- Footer -->
-    <footer class="mt-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h5 class="fw-800 mb-4" style="color: var(--accent-blue);">SmartStock ERP</h5>
-                    <p class="text-muted small">Industrial performance, natural intelligence. Build your warehouse ecosystem on the foundation of 2026 ERP technology.</p>
+    <footer class="pt-5 border-top">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <img src="${pageContext.request.contextPath}/assets/logo.png" alt="SmartStock ERP" style="height: 32px;" class="mb-4">
+                    <p class="text-muted small" style="max-width: 400px;">SmartStock ERP is the definitive ecosystem for industrial performance. Built on the J2EE foundation for the 2026 digital landscape.</p>
                 </div>
-                <div class="col-md-2 offset-md-2">
-                    <h6 class="fw-bold mb-4">Product</h6>
-                    <ul class="list-unstyled small text-muted">
-                        <li class="mb-2">Features</li>
-                        <li class="mb-2">Pricing</li>
-                        <li class="mb-2">Console</li>
-                    </ul>
-                </div>
-                <div class="col-md-4 text-md-end">
-                    <h6 class="fw-bold mb-4">Global Network</h6>
-                    <div class="d-flex gap-3 justify-content-md-end fs-4">
-                        <i class="bi bi-linkedin" style="color: var(--accent-blue);"></i>
-                        <i class="bi bi-github"></i>
-                        <i class="bi bi-twitter-x"></i>
+                <div class="col-md-6 text-md-end">
+                    <div class="d-flex gap-4 justify-content-md-end fs-4 mb-4">
+                        <a href="#" class="text-primary"><i class="bi bi-linkedin"></i></a>
+                        <a href="#" class="text-dark"><i class="bi bi-github"></i></a>
+                        <a href="#" class="text-info"><i class="bi bi-twitter-x"></i></a>
                     </div>
+                    <p class="text-muted small">&copy; 2026 SmartStock ERP Global. Natural intelligence in logistics.</p>
                 </div>
             </div>
-            <hr class="my-5 opacity-10">
-            <p class="text-center text-muted small">&copy; 2026 SmartStock ERP Global. All rights reserved.</p>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script>
-        AOS.init({ duration: 800, once: true });
+        AOS.init({ duration: 1000, once: true });
         window.onscroll = function() {
             var nav = document.getElementById('mainNav');
             if (window.pageYOffset > 50) {
