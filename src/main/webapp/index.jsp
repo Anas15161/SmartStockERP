@@ -99,7 +99,7 @@
     <nav class="navbar navbar-expand-lg fixed-top navbar-light bg-transparent" id="mainNav">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center fw-800" href="#">
-                <i class="bi bi-box-seam-fill me-2" style="color: var(--accent-blue);"></i>SmartStock<span style="color: var(--accent-blue);">ERP</span>
+                <img src="${pageContext.request.contextPath}/assets/logo.png" alt="SmartStock ERP" style="height: 32px;">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
                 <span class="navbar-toggler-icon"></span>

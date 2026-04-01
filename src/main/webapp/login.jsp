@@ -39,8 +39,8 @@
 </head>
 <body>
     <div class="login-card card border-0 p-5 shadow-lg">
-        <div class="logo-circle">
-            <i class="bi bi-box-seam-fill text-white fs-3"></i>
+        <div class="text-center mb-4">
+            <img src="${pageContext.request.contextPath}/assets/logo.png" alt="SmartStock ERP" style="max-width: 200px;">
         </div>
         
         <h3 class="fw-800 text-center mb-1">System Login</h3>

@@ -19,7 +19,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top mb-5">
         <div class="container-fluid px-lg-5">
             <a class="navbar-brand d-flex align-items-center fw-800" href="${pageContext.request.contextPath}/index.jsp">
-                <i class="bi bi-box-seam-fill text-primary me-2"></i>SmartStock<span class="text-primary">ERP</span>
+                <img src="${pageContext.request.contextPath}/assets/logo.png" alt="SmartStock ERP" style="height: 32px;">
             </a>
             
             <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#systemNav">
