@@ -74,7 +74,7 @@ public class ProductServlet extends HttpServlet {
     private void showNewForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<Supplier> listSupplier = supplierRepository.findAll();
         request.setAttribute("listSupplier", listSupplier);
-        request.getRequestDispatcher("/products/form.jsp").forward(request, response);
+        request.getRequestDispatcher("/products/add.jsp").forward(request, response);
     }
 
     private void showEditForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -83,7 +83,7 @@ public class ProductServlet extends HttpServlet {
         List<Supplier> listSupplier = supplierRepository.findAll();
         request.setAttribute("product", existingProduct);
         request.setAttribute("listSupplier", listSupplier);
-        request.getRequestDispatcher("/products/form.jsp").forward(request, response);
+        request.getRequestDispatcher("/products/edit.jsp").forward(request, response);
     }
 
     private void insertProduct(HttpServletRequest request, HttpServletResponse response) throws IOException {

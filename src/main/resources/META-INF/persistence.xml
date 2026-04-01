@@ -12,9 +12,9 @@
         <properties>
             <!-- Oracle Database Configuration -->
             <property name="jakarta.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:oracle:thin:@localhost:1521:xe"/>
-            <property name="jakarta.persistence.jdbc.user" value="sysdba"/>
-            <property name="jakarta.persistence.jdbc.password" value="admin"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:oracle:thin:@localhost:1521/XEPDB1"/>
+            <property name="jakarta.persistence.jdbc.user" value="smartstock"/>
+            <property name="jakarta.persistence.jdbc.password" value="1234"/>
 
             <!-- Hibernate Settings -->
             <property name="hibernate.dialect" value="org.hibernate.dialect.OracleDialect"/>
