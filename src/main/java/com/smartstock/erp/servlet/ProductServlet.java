@@ -82,12 +82,45 @@ public class ProductServlet extends HttpServlet {
             page = Integer.parseInt(pageParam);
         }
 
-        long totalProducts = productRepository.count();
-        int totalPages = (int) Math.ceil((double) totalProducts / size);
+        // Get filter parameters
+        String search = request.getParameter("search");
+        String status = request.getParameter("status");
+        String supplierIdStr = request.getParameter("supplierId");
+        String supplierName = request.getParameter("supplierName");
+        String minPriceStr = request.getParameter("minPrice");
+        String maxPriceStr = request.getParameter("maxPrice");
+
+        Long supplierId = null;
+        if (supplierIdStr != null && !supplierIdStr.trim().isEmpty() && !"all".equalsIgnoreCase(supplierIdStr)) {
+            try {
+                supplierId = Long.parseLong(supplierIdStr);
+            } catch (NumberFormatException e) {
+                // Ignore
+            }
+        }
         
-        List<Product> listProduct = productRepository.findPaginated(page, size);
+        // If supplierId is set, clear supplierName to avoid conflict
+        if (supplierId != null) {
+            supplierName = null;
+        }
+        
+        Double minPrice = null;
+        Double maxPrice = null;
+        try {
+            if (minPriceStr != null && !minPriceStr.isEmpty()) minPrice = Double.parseDouble(minPriceStr);
+            if (maxPriceStr != null && !maxPriceStr.isEmpty()) maxPrice = Double.parseDouble(maxPriceStr);
+        } catch (NumberFormatException e) {
+            // Silently ignore invalid price inputs
+        }
+
+        long totalProducts = productRepository.countFiltered(search, minPrice, maxPrice, status, supplierId, supplierName);
+        int totalPages = (int) Math.ceil((double) totalProducts / size);
+        if (totalPages == 0) totalPages = 1;
+        
+        List<Product> listProduct = productRepository.findFilteredPaginated(page, size, search, minPrice, maxPrice, status, supplierId, supplierName);
         
         request.setAttribute("listProduct", listProduct);
+        request.setAttribute("listSupplier", supplierRepository.findAll()); // For the filter dropdown
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);
         request.setAttribute("totalItems", totalProducts);

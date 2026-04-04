@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartStock ERP | Intelligent Supply Chain Ecosystem</title>
-    
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -21,7 +21,7 @@
             align-items: center;
             margin-top: -80px; /* Offset for transparent nav */
         }
-        
+
         .floating-badge {
             background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(10px);
@@ -109,11 +109,11 @@
 
                     <h1 class="hero-title fw-800">
                         Intelligent <span class="text-gradient-blue">Inventory</span> <br>
-                        Mastery Simplified.
+                        Management for Excellence.
                     </h1>
                     <p class="lead fw-600 mb-5 pe-lg-5" style="color: #334155; line-height: 1.8; text-shadow: 0 0 20px rgba(255,255,255,0.5);">
-                        The ultimate J2EE backbone for modern supply chains. Orchestrate products, 
-                        suppliers, and logistics with sub-second precision and predictive intelligence.
+                        The robust Jakarta EE 10 backbone for modern enterprises. Orchestrate products,
+                        suppliers, and stocks with high-tier precision and Hibernate 6 performance.
                     </p>
                     <div class="d-flex gap-3">
                         <a href="login.jsp" class="btn btn-primary btn-lg px-5 py-3 shadow-lg">Start Building Free</a>
@@ -192,23 +192,23 @@
             <div class="row g-4">
                 <div class="col-md-4" data-aos="fade-up">
                     <div class="card p-5 h-100 border-0 shadow-sm text-center">
-                        <div class="icon-box text-primary fs-3"><i class="bi bi-lightning-charge"></i></div>
-                        <h5 class="fw-bold mb-3">Instant Sync</h5>
-                        <p class="text-muted small">Distributed state management ensuring all terminals reflect stock changes in milliseconds.</p>
+                        <div class="icon-box text-primary fs-3"><i class="bi bi-box-seam"></i></div>
+                        <h5 class="fw-bold mb-3">Product Lifecycle</h5>
+                        <p class="text-muted small">Advanced JPA-backed inventory tracking with sub-second synchronization across all nodes.</p>
                     </div>
                 </div>
                 <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
                     <div class="card p-5 h-100 border-0 shadow-sm text-center">
-                        <div class="icon-box text-success fs-3"><i class="bi bi-shield-check"></i></div>
-                        <h5 class="fw-bold mb-3">Secure Ledger</h5>
-                        <p class="text-muted small">Immutable transaction logging with enterprise-grade encryption and full audit trails.</p>
+                        <div class="icon-box text-success fs-3"><i class="bi bi-people"></i></div>
+                        <h5 class="fw-bold mb-3">Supplier Network</h5>
+                        <p class="text-muted small">Comprehensive supplier relationship management integrated directly into your supply chain ledger.</p>
                     </div>
                 </div>
                 <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
                     <div class="card p-5 h-100 border-0 shadow-sm text-center">
-                        <div class="icon-box text-warning fs-3"><i class="bi bi-cpu"></i></div>
-                        <h5 class="fw-bold mb-3">AI Prediction</h5>
-                        <p class="text-muted small">Neural-network driven demand forecasting to eliminate overstock and stockouts.</p>
+                        <div class="icon-box text-warning fs-3"><i class="bi bi-cloud-arrow-up"></i></div>
+                        <h5 class="fw-bold mb-3">REST Interop</h5>
+                        <p class="text-muted small">Native JAX-RS endpoints ensuring your data is accessible via mobile, web, or third-party integrations.</p>
                     </div>
                 </div>
             </div>
@@ -254,7 +254,7 @@
             <div class="row align-items-center">
                 <div class="col-md-6">
                     <img src="${pageContext.request.contextPath}/assets/logo.png" alt="SmartStock ERP" style="height: 32px;" class="mb-4">
-                    <p class="text-muted small" style="max-width: 400px;">SmartStock ERP is the definitive ecosystem for industrial performance. Built on the J2EE foundation for the 2026 digital landscape.</p>
+                    <p class="text-muted small" style="max-width: 400px;">SmartStock ERP is the definitive ecosystem for industrial performance. Built on the Jakarta EE 10 foundation for the 2026 digital landscape.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
                     <div class="d-flex gap-4 justify-content-md-end fs-4 mb-4">

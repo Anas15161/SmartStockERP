@@ -26,17 +26,17 @@ public class Product implements Serializable {
     @NotNull
     @Min(value = 0, message = "Stock quantity cannot be negative")
     @Column(name = "stock_quantity", nullable = false)
-    private Integer stockQuantity;
+    private Integer stockQuantity = 0;
 
     @NotNull
     @Min(value = 0, message = "Alert threshold cannot be negative")
     @Column(name = "alert_threshold", nullable = false)
-    private Integer alertThreshold;
+    private Integer alertThreshold = 10;
 
     @NotNull
     @DecimalMin(value = "0.0", inclusive = false, message = "Unit price must be greater than zero")
     @Column(name = "unit_price", nullable = false, precision = 10, scale = 2)
-    private BigDecimal unitPrice;
+    private BigDecimal unitPrice = BigDecimal.ZERO;
 
     @Column(name = "last_updated")
     private LocalDateTime lastUpdated;

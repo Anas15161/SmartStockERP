@@ -29,7 +29,7 @@
 
         <div class="row g-3">
             <div class="col-md-4 mb-3">
-                <label class="form-label">Unit Price (€)</label>
+                <label class="form-label">Unit Price (${appSettings.currency != null ? appSettings.currency : 'DH'})</label>
                 <input type="number" step="0.01" name="unitPrice" class="form-control ${not empty errors.unitPrice ? 'is-invalid' : ''}" value="${product.unitPrice}" required/>
                 <c:if test="${not empty errors.unitPrice}">
                     <div class="invalid-feedback">${errors.unitPrice}</div>

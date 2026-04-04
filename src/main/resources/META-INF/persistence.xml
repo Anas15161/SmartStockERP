@@ -8,6 +8,7 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <class>com.smartstock.erp.model.Product</class>
         <class>com.smartstock.erp.model.Supplier</class>
+        <class>com.smartstock.erp.model.GlobalSetting</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
         <properties>

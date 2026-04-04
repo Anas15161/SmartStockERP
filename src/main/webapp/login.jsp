@@ -100,7 +100,7 @@
         <div class="login-visual">
             <div class="visual-content">
                 <h2 class="fw-800 display-6">Global Logistics <br> Under Control.</h2>
-                <p class="opacity-75 lead">The definitive J2EE foundation for the next generation of warehouse ecosystems.</p>
+                <p class="opacity-75 lead">The definitive Jakarta EE 10 foundation for the next generation of warehouse ecosystems.</p>
             </div>
         </div>
         
