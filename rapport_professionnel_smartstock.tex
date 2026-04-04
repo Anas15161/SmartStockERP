@@ -1,0 +1,228 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{lmodern}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{setspace}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit}
+
+\geometry{margin=2.5cm}
+\onehalfspacing
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!50!black,
+    urlcolor=blue!60!black,
+    citecolor=blue!50!black
+}
+
+% Palette académique
+\definecolor{mainblue}{RGB}{25, 55, 109}
+\definecolor{accentblue}{RGB}{72, 149, 239}
+\definecolor{softgray}{RGB}{245, 247, 250}
+\definecolor{darkgray}{RGB}{70, 70, 70}
+\definecolor{okgreen}{RGB}{40, 167, 69}
+\definecolor{warnorange}{RGB}{255, 159, 67}
+\definecolor{alertred}{RGB}{220, 53, 69}
+
+\titleformat{\chapter}[display]
+{\bfseries\Huge\color{mainblue}}
+{\filleft\Large\chaptername\ \thechapter}
+{1ex}
+{\titlerule\vspace{1ex}\filright}
+
+\titleformat{\section}
+{\bfseries\Large\color{mainblue}}{\thesection}{0.8em}{}
+\titleformat{\subsection}
+{\bfseries\large\color{darkgray}}{\thesubsection}{0.8em}{}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+
+\begin{document}
+
+\begin{titlepage}
+    \centering
+    \vspace*{1cm}
+    {\Huge\bfseries\color{mainblue} Rapport Professionnel}\\[0.3cm]
+    {\LARGE\bfseries\color{mainblue} SmartStock ERP}\\[0.8cm]
+    \HRule\\[0.5cm]
+    {\Large Conception, Développement et Intégration d'un ERP de Gestion de Stock}\\[0.3cm]
+    {\large Architecture Jakarta EE 10 -- Modèle N-Tier}\\[0.5cm]
+    \HRule\\[1.2cm]
+    \includegraphics[width=0.2\textwidth]{logo.png}\\[1.2cm]
+    \begin{tabular}{rl}
+        \textbf{Établissement :} & [À compléter] \\
+        \textbf{Filière :} & [À compléter] \\
+        \textbf{Auteur :} & [À compléter] \\
+        \textbf{Encadrant :} & [À compléter] \\
+        \textbf{Année universitaire :} & 2025--2026
+    \end{tabular}
+    \vfill
+    {\large \today}
+\end{titlepage}
+
+\tableofcontents
+\clearpage
+
+\chapter{Contexte et Spécifications du Projet}
+
+\section{Présentation de l'application SmartStock ERP}
+SmartStock ERP est une application web de gestion des stocks et des fournisseurs, pensée pour les PME souhaitant fiabiliser leurs opérations logistiques. Elle centralise les informations critiques (produits, quantités, seuils d'alerte, fournisseurs), tout en offrant une interface claire pour les utilisateurs métier.
+
+\section{Objectifs académiques et techniques}
+Le projet vise à consolider des compétences en conception logicielle d'entreprise :
+\begin{itemize}
+    \item application du modèle architectural N-Tier et du pattern MVC ;
+    \item utilisation de Jakarta EE 10 (Servlet, Filter, CDI, JPA, Validation) ;
+    \item exposition de services RESTful interopérables via JAX-RS ;
+    \item industrialisation du cycle de build avec Maven.
+\end{itemize}
+
+\section{Exigences fonctionnelles}
+Les exigences principales sont les suivantes :
+\begin{enumerate}
+    \item Gestion CRUD des produits et fournisseurs.
+    \item Authentification des utilisateurs et contrôle d'accès.
+    \item Visualisation des niveaux de stock et détection des seuils critiques.
+    \item Interface web ergonomique avec rendu dynamique.
+    \item Exposition d'API REST pour intégration externe.
+\end{enumerate}
+
+\section{Architecture cible : Modèle N-Tier}
+L'architecture retenue sépare clairement les responsabilités afin de favoriser maintenabilité, testabilité et évolutivité.
+
+\begin{center}
+\begin{tikzpicture}[node distance=1.2cm]
+    \tikzstyle{tier}=[rectangle, rounded corners, draw=mainblue, very thick, fill=softgray, minimum width=11cm, minimum height=1.05cm, align=center]
+    \node[tier, fill=accentblue!20] (ui) {Couche Présentation\\JSP, JSTL, CSS, UX};
+    \node[tier, below=of ui] (ctrl) {Couche Contrôleur\\Servlets, Filters, Navigation HTTP};
+    \node[tier, below=of ctrl] (biz) {Couche Métier / Services\\Règles de gestion, orchestration};
+    \node[tier, below=of biz] (repo) {Couche Accès aux Données\\Repositories, DAO, CDI};
+    \node[tier, below=of repo, fill=mainblue!10] (db) {Couche Persistance\\JPA/Hibernate + Oracle Database XE};
+
+    \draw[-{Latex[length=3mm]}, thick, mainblue] (ui) -- (ctrl);
+    \draw[-{Latex[length=3mm]}, thick, mainblue] (ctrl) -- (biz);
+    \draw[-{Latex[length=3mm]}, thick, mainblue] (biz) -- (repo);
+    \draw[-{Latex[length=3mm]}, thick, mainblue] (repo) -- (db);
+    \draw[-{Latex[length=3mm]}, thick, mainblue] (db.east) .. controls +(2,0) and +(2,0) .. (ui.east);
+\end{tikzpicture}
+\end{center}
+
+\chapter{Modélisation et Persistance des Données}
+
+\section{Conception de la Base de Données}
+Le modèle relationnel est orienté cohérence métier et intégrité référentielle. Les entités principales sont \texttt{Product} et \texttt{Supplier}, reliées par une association de type \texttt{Many-to-One}.
+
+\subsection{Détails des Tables}
+\begin{itemize}
+    \item \textbf{SUPPLIERS} : \texttt{id}, \texttt{name}, \texttt{email}, \texttt{phone}, \texttt{address}, \texttt{category}.
+    \item \textbf{PRODUCTS} : \texttt{id}, \texttt{label}, \texttt{description}, \texttt{unit\_price}, \texttt{stock\_quantity}, \texttt{alert\_threshold}, \texttt{supplier\_id}.
+\end{itemize}
+
+\begin{center}
+\begin{tikzpicture}[node distance=2.5cm]
+    \tikzstyle{entity}=[rectangle, draw=mainblue, thick, rounded corners, fill=softgray, minimum width=5.3cm, minimum height=2.8cm, align=left]
+    \node[entity] (sup) {
+        \textbf{SUPPLIERS}\\
+        PK id\\
+        name\\
+        email\\
+        category
+    };
+    \node[entity, right=of sup] (prod) {
+        \textbf{PRODUCTS}\\
+        PK id\\
+        label\\
+        stock\_quantity\\
+        FK supplier\_id
+    };
+    \draw[-{Latex[length=3mm]}, very thick, mainblue] (prod.west) -- node[above]{N:1} (sup.east);
+\end{tikzpicture}
+\end{center}
+
+\section{Cartographie Objet-Relationnel (ORM)}
+La persistance est assurée via JPA 3.1 avec Hibernate, permettant une abstraction des opérations SQL en objets Java typés. Cette approche améliore la productivité et réduit les erreurs de manipulation directe des requêtes.
+
+\subsection{Configuration de la Persistence Unit}
+La \textit{Persistence Unit} centralise la configuration de la connexion, du provider JPA et des paramètres de génération de schéma. Le mode \texttt{RESOURCE\_LOCAL} permet un contrôle fin des transactions côté application.
+
+\section{Audit Technique via JPA Lifecycle Hooks}
+Les callbacks \texttt{@PrePersist} et \texttt{@PreUpdate} permettent d'automatiser les métadonnées d'audit (dates de création/modification). Cette pratique assure traçabilité et conformité technique sans alourdir les contrôleurs.
+
+\chapter{Architecture Logique et Sécurité}
+
+\section{Pattern Repository et Injection de Dépendances}
+Le pattern Repository isole la logique d'accès aux données et standardise les opérations CRUD. Couplé à CDI, il facilite l'injection des composants et limite le couplage entre couches.
+
+\section{Logique de Contrôle et Navigation}
+Les Servlets pilotent le flux HTTP : réception des requêtes, délégation à la couche métier, puis redirection vers les vues JSP adaptées. Cette logique garantit un parcours utilisateur cohérent et maintenable.
+
+\section{Sécurité : Authentification et Filtrage}
+La sécurité est appliquée transversalement via un filtre HTTP :
+\begin{itemize}
+    \item interception des routes protégées ;
+    \item vérification de session authentifiée ;
+    \item redirection vers la page de connexion si nécessaire.
+\end{itemize}
+
+\begin{center}
+\begin{tikzpicture}[node distance=1.8cm]
+    \tikzstyle{proc}=[rectangle, draw=mainblue, rounded corners, thick, fill=softgray, minimum width=3.7cm, minimum height=1cm, align=center]
+    \node[proc] (req) {Requête HTTP};
+    \node[proc, right=of req] (filter) {Authentication\\Filter};
+    \node[proc, right=of filter, fill=okgreen!20] (ok) {Session valide};
+    \node[proc, below=of ok, fill=alertred!20] (ko) {Redirection Login};
+    \draw[-{Latex[length=3mm]}, thick, mainblue] (req) -- (filter);
+    \draw[-{Latex[length=3mm]}, thick, okgreen] (filter) -- node[above]{Oui} (ok);
+    \draw[-{Latex[length=3mm]}, thick, alertred] (filter) -- node[right]{Non} (ko);
+\end{tikzpicture}
+\end{center}
+
+\chapter{Interface Utilisateur et Expérience Client}
+
+\section{Conception des Vues avec JSP et JSTL}
+Les vues utilisent JSP/JSTL pour afficher dynamiquement les données métier, tout en conservant une structure claire et réutilisable (fragments communs, composants d'interface, tableaux de données).
+
+\subsection{Exemple de boucle JSTL pour l'affichage du stock}
+Le rendu des produits s'appuie sur une itération JSTL permettant d'afficher les informations en temps réel et de marquer visuellement les seuils critiques.
+
+\section{Séparation des préoccupations (SoC)}
+Le respect de la séparation des préoccupations est assuré par la répartition suivante :
+\begin{itemize}
+    \item la vue gère uniquement la présentation ;
+    \item le contrôleur orchestre le flux applicatif ;
+    \item le modèle encapsule les données et règles de persistance.
+\end{itemize}
+
+\chapter{Intégration SOA et Standards Industriels}
+
+\section{API RESTful avec JAX-RS}
+L'API REST expose des endpoints métiers pour la consultation et la manipulation de ressources (\textit{products}, \textit{suppliers}). Le format JSON favorise l'intégration avec des clients web, mobile ou systèmes tiers.
+
+\section{Cycle de vie Maven et Déploiement}
+Maven structure le cycle de vie du projet (\texttt{validate}, \texttt{compile}, \texttt{test}, \texttt{package}) et produit un artefact \texttt{.war} prêt au déploiement sur un serveur compatible Jakarta EE.
+
+\begin{center}
+\begin{tikzpicture}[node distance=1.0cm]
+    \tikzstyle{phase}=[rectangle, draw=mainblue, thick, rounded corners, fill=accentblue!18, minimum width=2.7cm, minimum height=0.9cm]
+    \node[phase] (v) {validate};
+    \node[phase, right=of v] (c) {compile};
+    \node[phase, right=of c] (t) {test};
+    \node[phase, right=of t] (p) {package};
+    \node[phase, right=of p, fill=okgreen!25] (d) {deploy};
+    \draw[-{Latex[length=3mm]}, thick, mainblue] (v) -- (c);
+    \draw[-{Latex[length=3mm]}, thick, mainblue] (c) -- (t);
+    \draw[-{Latex[length=3mm]}, thick, mainblue] (t) -- (p);
+    \draw[-{Latex[length=3mm]}, thick, mainblue] (p) -- (d);
+\end{tikzpicture}
+\end{center}
+
+\chapter*{Conclusion}
+Ce rapport formalise une approche complète de développement d'un ERP académique et professionnel, en combinant rigueur architecturale, bonnes pratiques de sécurité et standards industriels. SmartStock ERP constitue une base solide, extensible vers des modules complémentaires tels que la facturation, la gestion des commandes ou l'analytique décisionnelle.
+
+\end{document}
