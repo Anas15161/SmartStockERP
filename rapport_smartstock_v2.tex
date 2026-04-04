@@ -1,0 +1,216 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{geometry}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning,shadows}
+
+\geometry{margin=2.5cm}
+
+% Couleurs professionnelles
+\definecolor{primary}{RGB}{31, 73, 125}
+\definecolor{secondary}{RGB}{192, 0, 0}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{primary},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+% Style des titres
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries\color{primary}}
+  {\filleft\MakeUppercase{\chaptertitlename} \Huge\thechapter}
+  {1ex}
+  {\titlerule\vspace{1ex}\filleft\Huge}
+
+\title{
+    \vspace{-2cm}
+    \includegraphics[width=4cm]{logo.png}\\[1cm]
+    \HRule \\[0.4cm]
+    {\huge \bfseries Rapport de Projet : SmartStock ERP}\\[0.4cm]
+    {\large \textit{Conception et Réalisation d'un système de gestion de stock sous Jakarta EE 10}}\\[0.2cm]
+    \HRule \\[1.5cm]
+}
+\author{
+    \textbf{Présenté par :}\\
+    [Nom de l'Étudiant]\\[1cm]
+    \textbf{Encadré par :}\\
+    [Nom de l'Encadrant]
+}
+\date{\today}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+
+\begin{document}
+
+\maketitle
+
+\chapter*{Remerciements}
+Je tiens à remercier... (À compléter par l'étudiant).
+
+\tableofcontents
+
+\chapter{Contexte et Spécifications du Projet}
+
+\section{Présentation de l'application SmartStock ERP}
+L'application \textbf{SmartStock ERP} est née d'un besoin croissant de digitalisation des processus de gestion de stock pour les petites et moyennes entreprises (PME). Dans un contexte où la réactivité est primordiale, SmartStock offre une interface centralisée pour le suivi des mouvements de marchandises et la gestion des relations fournisseurs.
+
+L'application permet non seulement le stockage des données, mais aussi une aide à la décision grâce à des indicateurs visuels sur les seuils critiques de stock.
+
+\section{Objectifs académiques et techniques}
+Ce projet a pour but principal de démontrer la maîtrise des technologies \textbf{Jakarta EE 10}. La transition de Java SE (Standard Edition) vers Jakarta EE (Enterprise Edition) implique une compréhension profonde des concepts suivants :
+\begin{itemize}
+    \item \textbf{Inversion de Contrôle (IoC) :} Utilisation de CDI (Contexts and Dependency Injection) pour découpler les composants.
+    \item \textbf{Gestion du cycle de vie :} Compréhension des scopes (\texttt{@RequestScoped}, \texttt{@ApplicationScoped}).
+    \item \textbf{Standards Industriels :} Utilisation de Maven pour la gestion du cycle de vie du projet (Build, Test, Package).
+\end{itemize}
+
+\section{Exigences fonctionnelles}
+Les fonctionnalités implémentées couvrent le cycle de vie standard des données de gestion :
+\begin{enumerate}
+    \item \textbf{Gestion des Produits :} Création, modification, consultation et suppression (CRUD). Chaque produit est lié à un fournisseur unique.
+    \item \textbf{Gestion des Fournisseurs :} Administration des partenaires commerciaux (Coordonnées, Catégories).
+    \item \textbf{Tableau de Bord (Dashboard) :} Synthèse visuelle incluant le nombre total de produits, de fournisseurs et une liste prioritaire des produits en rupture de stock imminente.
+    \item \textbf{Sécurité :} Un système d'authentification robuste protégeant l'accès aux données sensibles.
+\end{enumerate}
+
+\section{Architecture cible : Modèle N-Tier}
+Le projet adopte une architecture dite "en couches", favorisant la maintenance et l'évolution :
+
+\begin{center}
+\begin{tikzpicture}[node distance=1.5cm, auto]
+    \tikzstyle{layer} = [rectangle, draw, fill=blue!10, text width=6cm, text centered, rounded corners, minimum height=1cm, shadow={opacity=0.5}]
+    
+    \node (ui) [layer] {Couche Présentation (JSP, JSTL, CSS)};
+    \node (ctrl) [layer, below of=ui] {Couche Contrôleur (Servlets, Filter)};
+    \node (biz) [layer, below of=ctrl] {Couche Métier / DAO (Repositories)};
+    \node (db) [layer, fill=gray!20, below of=biz] {Base de Données (Oracle XE)};
+    
+    \path [draw, <->, thick] (ui) -- (ctrl);
+    \path [draw, <->, thick] (ctrl) -- (biz);
+    \path [draw, <->, thick] (biz) -- (db);
+\end{tikzpicture}
+\end{center}
+
+\chapter{Modélisation et Persistance des Données}
+
+\section{Conception de la Base de Données}
+Le stockage des données est assuré par \textbf{Oracle Database 23c Free}. Le schéma relationnel est optimisé pour garantir l'intégrité référentielle.
+
+\subsection{Détails des Tables}
+\begin{itemize}
+    \item \textbf{PRODUCTS :} \texttt{ID (PK)}, \texttt{LABEL}, \texttt{STOCK\_QUANTITY}, \texttt{UNIT\_PRICE}, \texttt{SUPPLIER\_ID (FK)}.
+    \item \textbf{SUPPLIERS :} \texttt{ID (PK)}, \texttt{NAME}, \texttt{EMAIL}, \texttt{ADDRESS}, \texttt{CATEGORY}.
+\end{itemize}
+
+\section{Cartographie Objet-Relationnel (ORM)}
+L'utilisation de JPA 3.1 permet de manipuler des objets Java au lieu de requêtes SQL brutes. L'implémentation choisie est \textbf{Hibernate 6.4}.
+
+\subsection{Configuration de la Persistence Unit}
+Extrait du fichier \texttt{persistence.xml} :
+\begin{lstlisting}[language=XML]
+<persistence-unit name="SmartStockPU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+    <properties>
+        <property name="jakarta.persistence.jdbc.url" value="jdbc:oracle:thin:@127.0.0.1:1521/XEPDB1"/>
+        <property name="hibernate.hbm2ddl.auto" value="update"/>
+    </properties>
+</persistence-unit>
+\end{lstlisting}
+
+\section{Audit Technique via JPA Lifecycle Hooks}
+Pour chaque entité, nous avons implémenté des mécanismes d'audit automatique à l'aide des annotations \texttt{@PrePersist} et \texttt{@PreUpdate}.
+\begin{lstlisting}[language=Java]
+@PreUpdate
+protected void onUpdate() {
+    this.updatedAt = LocalDateTime.now();
+}
+\end{lstlisting}
+Cette approche garantit que les dates de modification sont toujours à jour sans alourdir le code des contrôleurs.
+
+\chapter{Architecture Logique et Sécurité}
+
+\section{Pattern Repository et Injection de Dépendances}
+Pour centraliser les accès aux données, nous avons implémenté un \texttt{GenericRepository<T, ID>}. Ce dernier utilise l'\texttt{EntityManager} pour les opérations CRUD. Grâce à \textbf{Jakarta CDI}, ces repositories sont injectés dans les servlets :
+
+\begin{lstlisting}[language=Java]
+@Inject
+private ProductRepository productRepository;
+\end{lstlisting}
+
+\section{Logique de Contrôle et Navigation}
+Les \textbf{Servlets} Jakarta gèrent les requêtes utilisateur. Par exemple, la \texttt{ProductServlet} utilise un paramètre \texttt{action} pour router les requêtes vers les méthodes appropriées (list, edit, delete).
+
+\section{Sécurité : Authentification et Filtrage}
+La sécurité est implémentée de manière transversale via un \texttt{HttpFilter}.
+\begin{itemize}
+    \item \textbf{Interception :} Le filtre analyse l'URI demandée.
+    \item \textbf{Validation :} Si l'utilisateur tente d'accéder à une page protégée sans session active, il est redirigé vers \texttt{/login}.
+    \item \textbf{Exemption :} Les ressources statiques (CSS, Images) et l'API REST sont exemptées du filtrage pour permettre un accès fluide.
+\end{itemize}
+
+\chapter{Interface Utilisateur et Expérience Client}
+
+\section{Conception des Vues avec JSP et JSTL}
+L'interface utilisateur a été conçue pour être intuitive. Nous utilisons \textbf{JSTL} pour l'affichage dynamique des données, ce qui permet de garder les fichiers JSP propres.
+
+\subsection{Exemple de boucle JSTL pour l'affichage du stock}
+\begin{lstlisting}[language=HTML]
+<c:forEach items="${listProduct}" var="product">
+    <tr class="${product.stockQuantity <= product.alertThreshold ? 'table-danger' : ''}">
+        <td>${product.label}</td>
+        <td>${product.stockQuantity}</td>
+    </tr>
+</c:forEach>
+\end{lstlisting}
+
+\section{Séparation des préoccupations (SoC)}
+Le projet respecte scrupuleusement le pattern MVC. Les Servlets préparent les données (Modèle), puis les placent dans la \texttt{HttpServletRequest} avant de déléguer l'affichage à la JSP via le \texttt{RequestDispatcher}.
+
+\chapter{Intégration SOA et Standards Industriels}
+
+\section{API RESTful avec JAX-RS}
+Dans une optique d'ouverture du système (SOA - Service Oriented Architecture), une API REST a été mise en place.
+\begin{itemize}
+    \item \textbf{Technologie :} Jersey (implémentation de référence JAX-RS).
+    \item \textbf{Format :} JSON via JSON-B.
+    \item \textbf{Endpoint :} \texttt{GET /api/products} retourne la liste complète des produits pour des clients tiers.
+\end{itemize}
+
+\section{Cycle de vie Maven et Déploiement}
+Le projet utilise Maven pour automatiser les tâches répétitives.
+\begin{itemize}
+    \item \textbf{Compilation :} Respect du standard Java 17.
+    \item \textbf{Packaging :} Génération d'un artefact \texttt{.war} (Web Archive).
+    \item \textbf{Déploiement :} L'application est prête pour des serveurs comme Apache Tomcat ou Payara Micro.
+\end{itemize}
+
+\chapter*{Conclusion}
+Ce projet a permis de mettre en pratique les concepts avancés de Jakarta EE 10. La séparation claire entre la persistance, la logique métier et la vue assure une grande robustesse à l'application SmartStock ERP. Les perspectives d'évolution incluent l'ajout d'un module de facturation et l'intégration d'un Front-end moderne en React.
+
+\end{document}

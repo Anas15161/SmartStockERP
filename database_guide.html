@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartStock ERP - Guide Persistance Oracle & JPA</title>
+    <!-- Prism.js for Professional Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --oracle-red: #f80000;
+            --jakarta-blue: #2c3e50;
+            --hibernate-orange: #59626a;
+            --bg-light: #f1f5f9;
+            --text-main: #1e293b;
+            --accent: #3b82f6;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--jakarta-blue) 0%, #1a252f 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            border-bottom: 5px solid var(--oracle-red);
+        }
+
+        .hero h1 { font-size: 2.8rem; margin: 0; letter-spacing: -1px; }
+        .hero p { opacity: 0.8; font-size: 1.2rem; max-width: 800px; margin: 1rem auto; }
+
+        .container { max-width: 1000px; margin: -4rem auto 4rem auto; padding: 0 1.5rem; }
+
+        .process-step {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step-number {
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            font-size: 6rem;
+            font-weight: 900;
+            color: rgba(0,0,0,0.03);
+            user-select: none;
+        }
+
+        h2 { color: var(--jakarta-blue); display: flex; align-items: center; gap: 15px; margin-top: 0; }
+        h2 i { color: var(--oracle-red); }
+
+        .info-box {
+            background: #f8fafc;
+            border-left: 5px solid var(--accent);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .tech-tag {
+            display: inline-block;
+            background: #e2e8f0;
+            padding: 0.2rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 5px;
+            color: #475569;
+        }
+
+        /* Database Schema Visual */
+        .db-schema {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background: #1e293b;
+            padding: 2rem;
+            border-radius: 12px;
+            color: white;
+            margin: 2rem 0;
+        }
+
+        .table-box {
+            border: 2px solid #334155;
+            padding: 1rem;
+            border-radius: 8px;
+            width: 200px;
+            text-align: center;
+        }
+
+        .connector { height: 2px; background: var(--accent); flex-grow: 1; position: relative; max-width: 100px; }
+        .connector::after { content: 'N:1'; position: absolute; top: -25px; left: 40%; color: var(--accent); font-weight: bold; }
+
+        code { font-family: 'Fira Code', monospace; }
+
+        .code-title {
+            background: #334155;
+            color: #94a3b8;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            border-radius: 8px 8px 0 0;
+            margin-top: 1.5rem;
+        }
+
+        pre[class*="language-"] { margin-top: 0 !important; border-radius: 0 0 8px 8px !important; }
+
+        footer { text-align: center; color: #64748b; padding: 2rem; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+<div class="hero">
+    <h1>Architecture de Données : Oracle & JPA</h1>
+    <p>Comment nous avons orchestré la persistance haute performance entre Jakarta EE 10 et Oracle XE.</p>
+</div>
+
+<div class="container">
+
+    <!-- Step 1: Infrastructure -->
+    <div class="process-step">
+        <div class="step-number">01</div>
+        <h2><i class="fas fa-server"></i> Socle Technologique : Oracle XE 23c</h2>
+        <p>Le projet repose sur <strong>Oracle Database 23c Free</strong>, configuré en mode Pluggable Database (PDB). Ce choix garantit une compatibilité totale avec les standards industriels.</p>
+        
+        <div class="info-box">
+            <strong>Configuration de connexion :</strong>
+            <ul>
+                <li><strong>Service Name :</strong> XEPDB1 (Instance Pluggable)</li>
+                <li><strong>Driver :</strong> Oracle JDBC Thin Driver (ojdbc11)</li>
+                <li><strong>Dialect :</strong> OracleDialect (Optimisé pour Hibernate 6)</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Step 2: Persistence Config -->
+    <div class="process-step">
+        <div class="step-number">02</div>
+        <h2><i class="fas fa-cog"></i> Configuration de l'Unité de Persistance</h2>
+        <p>Le fichier <code>persistence.xml</code> est le cœur de la communication. Il définit comment JPA doit se comporter avec Oracle et Hibernate.</p>
+
+        <div class="code-title">src/main/resources/META-INF/persistence.xml</div>
+        <pre><code class="language-xml">&lt;persistence-unit name="SmartStockPU" transaction-type="RESOURCE_LOCAL"&gt;
+    &lt;provider&gt;org.hibernate.jpa.HibernatePersistenceProvider&lt;/provider&gt;
+    
+    &lt;properties&gt;
+        &lt;!-- Connection Oracle --&gt;
+        &lt;property name="jakarta.persistence.jdbc.url" value="jdbc:oracle:thin:@localhost:1521/XEPDB1"/&gt;
+        &lt;property name="jakarta.persistence.jdbc.user" value="smartstock"/&gt;
+        
+        &lt;!-- Hibernate Magic --&gt;
+        &lt;property name="hibernate.dialect" value="org.hibernate.dialect.OracleDialect"/&gt;
+        &lt;property name="hibernate.hbm2ddl.auto" value="update"/&gt; &lt;!-- Synchro Schema Auto --&gt;
+        &lt;property name="hibernate.show_sql" value="true"/&gt;
+    &lt;/properties&gt;
+&lt;/persistence-unit&gt;</code></pre>
+    </div>
+
+    <!-- Step 3: ORM Mapping -->
+    <div class="process-step">
+        <div class="step-number">03</div>
+        <h2><i class="fas fa-link"></i> Mapping Objet-Relationnel (ORM)</h2>
+        <p>Nous transformons des tables Oracle froides en objets Java vivants via les annotations Jakarta Persistence.</p>
+
+        <div class="db-schema">
+            <div class="table-box">
+                <i class="fas fa-table"></i><br>SUPPLIERS<br><small>ID, NAME, EMAIL</small>
+            </div>
+            <div class="connector"></div>
+            <div class="table-box" style="border-color: var(--accent);">
+                <i class="fas fa-table"></i><br>PRODUCTS<br><small>ID, LABEL, SUPP_ID</small>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <strong>Relation Many-to-One :</strong> Chaque produit est lié à un fournisseur. JPA gère automatiquement la <em>Foreign Key</em> (FK) dans la table PRODUCTS, évitant ainsi des jointures SQL manuelles complexes.
+        </div>
+
+        <div class="code-title">Mapping de la relation dans Product.java</div>
+        <pre><code class="language-java">@ManyToOne(fetch = FetchType.EAGER)
+@JoinColumn(name = "supplier_id")
+private Supplier supplier;</code></pre>
+    </div>
+
+    <!-- Step 4: Logic Layer -->
+    <div class="process-step">
+        <div class="step-number">04</div>
+        <h2><i class="fas fa-microchip"></i> Gestion via l'EntityManager</h2>
+        <p>L'<code>EntityManager</code> est notre interface unique pour toutes les opérations. Nous avons encapsulé sa logique dans un Repository générique pour maximiser la réutilisation du code.</p>
+
+        <div class="code-title">Repository Générique (Extrait CRUD)</div>
+        <pre><code class="language-java">public T update(T entity) {
+    EntityTransaction tx = em.getTransaction();
+    tx.begin();
+    T merged = em.merge(entity); // Synchronise avec Oracle
+    tx.commit();
+    return merged;
+}</code></pre>
+
+        <div class="explanation">
+            <strong>Le cycle de vie :</strong> Hibernate suit l'état de l'objet (Transient, Managed, Detached). Une fois "Managed" par l'EntityManager, toute modification sur l'objet Java est automatiquement répercutée dans la base Oracle lors du commit.
+        </div>
+    </div>
+
+    <!-- Step 5: Lifecycle Hooks -->
+    <div class="process-step">
+        <div class="step-number">05</div>
+        <h2><i class="fas fa-history"></i> Audit & Cycle de Vie (Callback JPA)</h2>
+        <p>Pour assurer la traçabilité des données sous Oracle, nous utilisons les <strong>Lifecycle Callbacks</strong>.</p>
+
+        <div class="code-title">Audit Automatique</div>
+        <pre><code class="language-java">@PrePersist
+protected void onCreate() {
+    this.createdAt = LocalDateTime.now(); // Avant insertion Oracle
+}
+
+@PreUpdate
+protected void onUpdate() {
+    this.updatedAt = LocalDateTime.now(); // Avant mise à jour Oracle
+}</code></pre>
+    </div>
+
+</div>
+
+<footer>
+    &copy; 2026 SmartStock ERP - Architecture de Persistance Avancée - Expertise Oracle XE & Hibernate
+</footer>
+
+<!-- Prism.js Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+
+</body>
+</html>

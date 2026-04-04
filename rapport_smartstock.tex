@@ -1,0 +1,149 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{geometry}
+
+\geometry{margin=2.5cm}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\title{Rapport de Projet : SmartStock ERP\\
+\large Migration vers Jakarta EE 10 et Architecture N-Tier}
+\author{Étudiant - SmartStock Team}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\chapter{Contexte et Spécifications du Projet}
+
+\section{Présentation de l'application SmartStock ERP}
+SmartStock ERP est une solution de gestion des stocks et des fournisseurs destinée aux entreprises souhaitant optimiser leurs flux logistiques. L'application permet de suivre en temps réel l'état des stocks, de gérer les seuils d'alerte et de centraliser les informations relatives aux fournisseurs.
+
+\section{Objectifs académiques et techniques}
+Le projet s'inscrit dans une démarche de transition technologique, passant d'une architecture Java SE standard vers une plateforme d'entreprise moderne : \textbf{Jakarta EE 10}. Les objectifs principaux incluent :
+\begin{itemize}
+    \item Maîtrise du cycle de vie des composants Jakarta EE (Servlets, Filters, CDI).
+    \item Mise en œuvre de la persistance via JPA 3.1.
+    \item Intégration de l'injection de dépendances (CDI) via Weld.
+\end{itemize}
+
+\section{Exigences fonctionnelles et techniques}
+\begin{itemize}
+    \item \textbf{CRUD complet} pour les Produits et les Fournisseurs.
+    \item \textbf{Authentification sécurisée} pour l'accès aux fonctionnalités d'administration.
+    \item \textbf{Gestion des stocks} avec alertes visuelles sur les produits dont la quantité est inférieure au seuil critique.
+    \item \textbf{Architecture Modulaire} basée sur Maven.
+\end{itemize}
+
+\section{Architecture cible : Modèle N-Tier et paradigme MVC}
+Le projet suit une architecture répartie en plusieurs couches (N-Tier) :
+\begin{enumerate}
+    \item \textbf{Couche Présentation (Vue) :} Pages JSP avec JSTL pour le rendu dynamique.
+    \item \textbf{Couche Contrôleur :} Servlets Jakarta pour le pilotage de la logique applicative.
+    \item \textbf{Couche Métier / DAO :} Repositories injectés via CDI.
+    \item \textbf{Couche Données (Modèle) :} Entités JPA persistées sous Oracle XE.
+\end{enumerate}
+
+\chapter{Modélisation et Persistance des Données (Couche Modèle)}
+
+\section{Conception du schéma de base de données sous Oracle XE}
+Le schéma repose sur deux tables principales : \texttt{PRODUCTS} et \texttt{SUPPLIERS}. La base de données utilisée est \textbf{Oracle Database 23c Free (XE)}, configurée via le service \texttt{XEPDB1}.
+
+\section{Cartographie Objet-Relationnel (ORM) avec JPA et Hibernate}
+La persistance est assurée par Hibernate 6.4 en tant que fournisseur JPA. La configuration est centralisée dans le fichier \texttt{persistence.xml}, utilisant une unité de persistance nommée \texttt{SmartStockPU} en mode \texttt{RESOURCE\_LOCAL}.
+
+\section{Implémentation des entités complexes}
+L'entité \texttt{Product} et l'entité \texttt{Supplier} utilisent des annotations Jakarta Persistence pour définir les colonnes, les types et les contraintes (ex: \texttt{precision} et \texttt{scale} pour les prix).
+
+\section{Gestion des relations bidirectionnelles}
+Le projet implémente une relation \textbf{One-To-Many} bidirectionnelle :
+\begin{itemize}
+    \item \texttt{Supplier} possède une liste de \texttt{Product} annotée \texttt{@OneToMany(mappedBy = "supplier")}.
+    \item \texttt{Product} possède une référence vers son \texttt{Supplier} annotée \texttt{@ManyToOne}.
+    \item Utilisation de \texttt{JsonbTransient} pour éviter les boucles lors de la sérialisation JSON.
+\end{itemize}
+
+\section{Audit technique et cycle de vie}
+L'utilisation des hooks JPA \texttt{@PrePersist} et \texttt{@PreUpdate} permet un suivi automatique des dates de création et de modification, garantissant l'intégrité de l'audit technique sans intervention manuelle dans la logique métier.
+
+\chapter{Architecture Logique et Sécurité (Couche Contrôleur)}
+
+\section{Implémentation du pattern DAO (Data Access Object)}
+Le pattern Repository est utilisé pour abstraire la couche de persistance. Un \texttt{GenericRepository<T, ID>} définit les opérations standards (create, update, delete, find), tandis que des repositories spécialisés comme \texttt{ProductRepository} ajoutent des méthodes spécifiques (ex: \texttt{findLowStockProducts}).
+
+\section{Gestion transactionnelle via l'EntityManager}
+Bien que le projet n'utilise pas d'EJB, la gestion transactionnelle est rigoureusement implémentée via l'API \texttt{EntityTransaction} d'Hibernate, assurant l'atomicité des opérations CRUD.
+
+\section{Centralisation de la logique applicative via les Servlets}
+Les Servlets (\texttt{ProductServlet}, \texttt{SupplierServlet}, etc.) agissent comme des contrôleurs frontaux pour traiter les requêtes HTTP, interagir avec les repositories et rediriger vers les vues appropriées.
+
+\section{Sécurisation des accès : Authentification et HttpFilter}
+Un \texttt{AuthenticationFilter} intercepte toutes les requêtes vers les zones sensibles. Il vérifie la présence d'un objet utilisateur en session et redirige vers la page de login en cas d'absence d'authentification.
+
+\section{Robustesse et Bean Validation}
+Les contraintes d'intégrité sont portées directement par les entités via \textbf{Jakarta Validation} (Hibernate Validator) :
+\begin{itemize}
+    \item \texttt{@NotNull} et \texttt{@Size} pour les chaînes.
+    \item \texttt{@Min} et \texttt{@DecimalMin} pour les quantités et prix.
+    \item \texttt{@Email} pour la validité des adresses électroniques.
+\end{itemize}
+
+\chapter{Interface Utilisateur (Couche Vue)}
+
+\section{Conception des pages JSP (JavaServer Pages)}
+Les vues sont construites à l'aide de fichiers JSP, organisés par modules (products, suppliers). Un système d'inclusion (\texttt{header.jsp}) assure la cohérence visuelle de l'application.
+
+\section{Respect strict de la séparation des préoccupations}
+Conformément au paradigme MVC, les pages JSP sont dépourvues de logique Java complexe (scriplets). Elles se limitent à l'affichage des données préparées par les contrôleurs.
+
+\section{Utilisation de JSTL pour un affichage dynamique}
+L'intégration de la bibliothèque \textbf{JSTL 3.0} (core et formatting) permet d'itérer sur les listes de produits (\texttt{<c:forEach>}), de gérer les affichages conditionnels et de formater les devises et dates de manière localisée.
+
+\chapter{Intégration SOA et Déploiement}
+
+\section{Conception d'une API RESTful avec JAX-RS}
+Pour répondre aux standards modernes d'interopérabilité, le projet expose une API REST via \textbf{Jersey}. Le point d'entrée est configuré à l'adresse \texttt{/api/*} via la classe \texttt{JaxRsApplication}.
+
+\section{Interopérabilité et format JSON}
+Les ressources (\texttt{ProductResource}) permettent d'exposer les données au format JSON, facilitant l'intégration future avec des frameworks Front-end (React, Angular) ou des applications mobiles.
+
+\section{Gestion du cycle de vie du projet avec Maven}
+Le fichier \texttt{pom.xml} orchestre les dépendances, définit les propriétés du compilateur (Java 17) et configure le plugin de génération d'archive.
+
+\section{Génération de l'artefact de déploiement}
+La commande \texttt{mvn package} génère un fichier \texttt{smartstock-erp.war}. Ce package standard peut être déployé sur n'importe quel serveur d'application compatible Jakarta EE 10, tel que WildFly, GlassFish ou un serveur Tomcat avec les librairies CDI/JPA embarquées.
+
+\end{document}

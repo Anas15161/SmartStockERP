@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartStock ERP - Technical Documentation & Architecture</title>
+    <!-- Prism.js for Professional Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --primary: #0f172a;
+            --accent: #3b82f6;
+            --secondary: #64748b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --code-bg: #1e293b;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg);
+            color: var(--primary);
+            margin: 0;
+            display: flex;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            height: 100vh;
+            background: var(--primary);
+            color: white;
+            position: fixed;
+            padding: 2rem 1rem;
+            overflow-y: auto;
+        }
+
+        .sidebar h2 {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .sidebar a {
+            color: #cbd5e1;
+            text-decoration: none;
+            display: block;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            transition: 0.3s;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .sidebar a:hover, .sidebar a.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            flex: 1;
+            padding: 3rem;
+            max-width: calc(100% - 280px);
+        }
+
+        header {
+            margin-bottom: 4rem;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 2rem;
+        }
+
+        header h1 { font-size: 2.5rem; margin: 0; }
+        header p { color: var(--secondary); font-size: 1.1rem; }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        h2 { font-size: 1.8rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; }
+        h2 i { color: var(--accent); }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .tech-item {
+            background: #f1f5f9;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .tech-item strong { display: block; color: var(--accent); margin-bottom: 0.3rem; }
+
+        /* Project Tree View */
+        .tree-view {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            background: #f1f5f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            color: #334155;
+            line-height: 1.4;
+        }
+
+        .tree-folder { color: var(--accent); font-weight: 600; }
+        .tree-file { color: #475569; }
+
+        /* Code Block Styling */
+        .code-container {
+            margin-top: 1.5rem;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .code-label {
+            background: var(--code-bg);
+            color: #94a3b8;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            font-family: monospace;
+            border-bottom: 1px solid #334155;
+        }
+
+        /* Technical Info Badges */
+        .badge-row { display: flex; gap: 10px; margin-bottom: 1rem; flex-wrap: wrap; }
+        .badge {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .explanation {
+            background: #f8fafc;
+            border-left: 4px solid var(--accent);
+            padding: 1rem;
+            margin: 1rem 0;
+            color: #475569;
+            font-style: italic;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar { width: 60px; padding: 2rem 0.5rem; }
+            .sidebar h2, .sidebar a span { display: none; }
+            .main-content { margin-left: 60px; max-width: calc(100% - 60px); }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="sidebar">
+    <h2><i class="fas fa-microchip"></i> <span>SmartStock</span></h2>
+    <a href="#overview"><i class="fas fa-info-circle"></i> <span>Aperçu Général</span></a>
+    <a href="#stack"><i class="fas fa-layer-group"></i> <span>Stack Technique</span></a>
+    <a href="#structure"><i class="fas fa-sitemap"></i> <span>Structure Projet</span></a>
+    <a href="#mvc"><i class="fas fa-exchange-alt"></i> <span>Architecture MVC</span></a>
+    <a href="#jpa"><i class="fas fa-database"></i> <span>Persistance JPA</span></a>
+    <a href="#security"><i class="fas fa-shield-alt"></i> <span>Sécurité & Filter</span></a>
+    <a href="#api"><i class="fas fa-network-wired"></i> <span>API REST JAX-RS</span></a>
+</nav>
+
+<div class="main-content">
+    <header id="overview">
+        <h1>Documentation Technique SmartStock ERP</h1>
+        <p>Expertise Jakarta EE 10 - Architecture N-Tier - Persistance JPA & Hibernate 6</p>
+    </header>
+
+    <!-- Tech Stack Matrix -->
+    <section class="card" id="stack">
+        <h2><i class="fas fa-tools"></i> Stack Technologique Industrielle</h2>
+        <div class="tech-grid">
+            <div class="tech-item"><strong>Java Runtime</strong>Java 17 (LTS)</div>
+            <div class="tech-item"><strong>Framework</strong>Jakarta EE 10</div>
+            <div class="tech-item"><strong>Serveur App</strong>Tomcat 10 / WildFly</div>
+            <div class="tech-item"><strong>Persistence</strong>Hibernate 6.4 (JPA 3.1)</div>
+            <div class="tech-item"><strong>Database</strong>Oracle XE 23c (PDB)</div>
+            <div class="tech-item"><strong>DI Container</strong>Weld (CDI 4.0)</div>
+            <div class="tech-item"><strong>Validation</strong>Hibernate Validator 8</div>
+            <div class="tech-item"><strong>API REST</strong>Jersey 3.1 (JAX-RS)</div>
+        </div>
+    </section>
+
+    <!-- Project Structure -->
+    <section class="card" id="structure">
+        <h2><i class="fas fa-folder-tree"></i> Arborescence du Projet Maven</h2>
+        <p>Organisation modulaire respectant les standards de déploiement Web Archive (WAR).</p>
+        <div class="tree-view">
+            <div><span class="tree-folder">SmartStockERP/</span></div>
+            <div>&nbsp;&nbsp;├── <span class="tree-file">pom.xml</span> <span style="color:#94a3b8">// Gestionnaire de dépendances & Build Maven</span></div>
+            <div>&nbsp;&nbsp;└── <span class="tree-folder">src/main/</span></div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="tree-folder">java/com/smartstock/erp/</span></div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="tree-folder">model/</span> <span style="color:#94a3b8">// Entités JPA (@Entity)</span></div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="tree-folder">repository/</span> <span style="color:#94a3b8">// Couche DAO Générique (@Inject)</span></div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="tree-folder">resource/</span> <span style="color:#94a3b8">// Endpoints REST (JAX-RS)</span></div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── <span class="tree-folder">servlet/</span> <span style="color:#94a3b8">// Contrôleurs MVC & Filtres</span></div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="tree-folder">resources/META-INF/</span></div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── <span class="tree-file">persistence.xml</span> <span style="color:#94a3b8">// Unité de persistance Oracle</span></div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="tree-folder">webapp/</span></div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="tree-folder">WEB-INF/</span> <span style="color:#94a3b8">// Configuration beans.xml (CDI)</span></div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="tree-folder">products/</span> <span style="color:#94a3b8">// Vues JSP Modules</span></div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="tree-file">index.jsp</span></div>
+        </div>
+    </section>
+
+    <!-- MVC Deep Dive -->
+    <section class="card" id="mvc">
+        <h2><i class="fas fa-code-branch"></i> Pattern MVC 2 & Pilotage de Navigation</h2>
+        <div class="badge-row">
+            <span class="badge">Jakarta Servlet 6.0</span>
+            <span class="badge">Jakarta Pages 3.1</span>
+            <span class="badge">CDI 4.0</span>
+        </div>
+        <p>Le pilotage est assuré par des servlets "Front-Controller" qui orchestrent les échanges entre la vue et le modèle.</p>
+        
+        <div class="explanation">
+            <strong>Détail technique :</strong> L'utilisation de <code>@Inject</code> permet de déléguer l'instanciation des Repositories au conteneur Weld, assurant un couplage faible.
+        </div>
+
+        <div class="code-container">
+            <div class="code-label">com.smartstock.erp.servlet.ProductServlet.java</div>
+            <pre><code class="language-java">@WebServlet(name = "ProductServlet", urlPatterns = {"/products"})
+public class ProductServlet extends HttpServlet {
+
+    @Inject
+    private ProductRepository productRepository; // Injection CDI
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        
+        String action = request.getParameter("action");
+        if ("lowstock".equals(action)) {
+            request.setAttribute("items", productRepository.findLowStockProducts());
+        } else {
+            request.setAttribute("items", productRepository.findAll());
+        }
+        
+        // Délégation à la vue JSP
+        request.getRequestDispatcher("/products/list.jsp").forward(request, response);
+    }
+}</code></pre>
+        </div>
+    </section>
+
+    <!-- JPA Persistence -->
+    <section class="card" id="jpa">
+        <h2><i class="fas fa-database"></i> Couche Persistance & ORM Avancé</h2>
+        <div class="badge-row">
+            <span class="badge">JPA 3.1</span>
+            <span class="badge">Hibernate 6.4</span>
+            <span class="badge">Criteria API</span>
+        </div>
+        <p>Gestion transparente du schéma Oracle XE via une cartographie objet-relationnelle rigoureuse.</p>
+
+        <div class="explanation">
+            <strong>Zéro JDBC :</strong> Toutes les requêtes sont générées par Hibernate. La relation <code>@ManyToOne</code> entre Produit et Fournisseur est gérée avec un <code>FetchType.EAGER</code> pour optimiser les performances lors de l'affichage des listes.
+        </div>
+
+        <div class="code-container">
+            <div class="code-label">com.smartstock.erp.model.Product.java</div>
+            <pre><code class="language-java">@Entity
+@Table(name = "PRODUCTS")
+public class Product implements Serializable {
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotNull @Size(min = 3)
+    @Column(nullable = false, length = 100)
+    private String label;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "supplier_id")
+    private Supplier supplier; // Relation bidirectionnelle
+
+    @PrePersist @PreUpdate
+    protected void onUpdate() {
+        this.lastUpdated = LocalDateTime.now(); // Hook de cycle de vie
+    }
+}</code></pre>
+        </div>
+    </section>
+
+    <!-- Security Section -->
+    <section class="card" id="security">
+        <h2><i class="fas fa-user-lock"></i> Sécurité : Middleware & Filtrage HTTP</h2>
+        <div class="badge-row">
+            <span class="badge">Jakarta Filter</span>
+            <span class="badge">Session Tracking</span>
+        </div>
+        <p>Protection granulaire des ressources sensibles via un filtre d'authentification centralisé.</p>
+
+        <div class="code-container">
+            <div class="code-label">com.smartstock.erp.servlet.AuthenticationFilter.java</div>
+            <pre><code class="language-java">@WebFilter(urlPatterns = {"/products/*", "/suppliers/*", "/dashboard"})
+public class AuthenticationFilter implements Filter {
+    
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) 
+            throws IOException, ServletException {
+        
+        HttpServletRequest req = (HttpServletRequest) request;
+        HttpSession session = req.getSession(false);
+
+        // Bypass pour les ressources publiques et statiques
+        if (session != null && session.getAttribute("user") != null) {
+            chain.doFilter(request, response);
+        } else {
+            ((HttpServletResponse) response).sendRedirect(req.getContextPath() + "/login");
+        }
+    }
+}</code></pre>
+        </div>
+    </section>
+
+    <!-- REST API Bonus -->
+    <section class="card" id="api">
+        <h2><i class="fas fa-cloud-upload-alt"></i> Interopérabilité : JAX-RS (REST API)</h2>
+        <div class="badge-row">
+            <span class="badge">Jakarta REST 3.1</span>
+            <span class="badge">JSON-B 3.0</span>
+            <span class="badge">Jersey</span>
+        </div>
+        <p>Exposition de services Web pour l'intégration mobile et front-end découplé.</p>
+
+        <div class="code-container">
+            <div class="code-label">com.smartstock.erp.resource.ProductResource.java</div>
+            <pre><code class="language-java">@Path("/products")
+@Produces(MediaType.APPLICATION_JSON)
+public class ProductResource {
+
+    @Inject
+    private ProductRepository repository;
+
+    @GET
+    public List&lt;Product&gt; getJsonList() {
+        return repository.findAll(); // Sérialisation automatique vers JSON
+    }
+}</code></pre>
+        </div>
+    </section>
+
+</div>
+
+<!-- Prism.js Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+
+<script>
+    // Smooth scroll for sidebar links
+    document.querySelectorAll('.sidebar a').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+            document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+</script>
+
+</body>
+</html>
