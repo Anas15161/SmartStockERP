@@ -1,0 +1,319 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{lmodern}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{setspace}
+\usepackage{tikz}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,calc}
+
+\geometry{margin=2.3cm}
+\onehalfspacing
+\hypersetup{colorlinks=true,linkcolor=blue!50!black,urlcolor=blue!60!black}
+
+\definecolor{mainblue}{RGB}{11,94,158}
+\definecolor{deepblue}{RGB}{7,74,125}
+\definecolor{softblue}{RGB}{224,242,254}
+\definecolor{softgreen}{RGB}{220,252,231}
+\definecolor{softgray}{RGB}{248,250,252}
+\definecolor{textgray}{RGB}{71,85,105}
+\definecolor{warnred}{RGB}{220,38,38}
+
+\titleformat{\chapter}[display]
+{\bfseries\Huge\color{deepblue}}
+{\filleft\Large\chaptername\ \thechapter}
+{1ex}
+{\titlerule\vspace{1ex}\filright}
+
+\titleformat{\section}
+{\bfseries\Large\color{mainblue}}{\thesection}{0.8em}{}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.6mm}}
+
+\begin{document}
+
+\begin{titlepage}
+    \centering
+    \vspace*{0.8cm}
+    \includegraphics[width=0.22\textwidth]{logo.png}\\[0.7cm]
+    {\Huge\bfseries\color{deepblue} Analyse Compl\`ete du Projet}\\[0.2cm]
+    {\Huge\bfseries\color{deepblue} SmartStock ERP}\\[0.5cm]
+    \HRule\\[0.4cm]
+    {\Large Document de pr\'esentation technique (15 minutes)}\\[0.2cm]
+    {\large Architecture, Base de donn\'ees, Technologies et Utilit\'e des modules}\\[0.4cm]
+    \HRule\\[1.0cm]
+    \begin{tabular}{rl}
+        \textbf{Projet :} & SmartStock ERP \\
+        \textbf{Type :} & Application Web Jakarta EE 10 (WAR) \\
+        \textbf{P\'eriode :} & 2025--2026 \\
+        \textbf{Version analys\'ee :} & 1.0-SNAPSHOT
+    \end{tabular}
+    \vfill
+    {\large \today}
+\end{titlepage}
+
+\tableofcontents
+\clearpage
+
+\chapter*{R\'esum\'e ex\'ecutif}
+\addcontentsline{toc}{chapter}{R\'esum\'e ex\'ecutif}
+SmartStock ERP est une application de gestion de stock et de fournisseurs construite en Java 17 avec Jakarta EE 10. Le projet suit une architecture en couches (MVC + Repository), combine une interface web JSP/Bootstrap moderne avec une API REST JAX-RS, et persiste les donn\'ees dans Oracle via JPA/Hibernate. L'objectif m\'etier principal est de centraliser la gestion des produits, suivre les niveaux de stock, et piloter les relations fournisseurs avec un tableau de bord op\'erationnel.
+
+\chapter{Pr\'esentation globale du projet}
+
+\section{Objectif fonctionnel}
+Le projet r\'epond \`a un besoin de pilotage logistique :
+\begin{itemize}[leftmargin=1.2cm]
+    \item g\'erer les produits (CRUD, prix, quantit\'e, seuil d'alerte) ;
+    \item g\'erer les fournisseurs (CRUD, contact, cat\'egorie) ;
+    \item visualiser des indicateurs de synth\`ese via un dashboard ;
+    \item param\'etrer des options globales de l'application ;
+    \item exposer des donn\'ees via API REST.
+\end{itemize}
+
+\section{Port\'ee technique}
+L'application est packag\'ee en \texttt{WAR} Maven, d\'eployable sur un conteneur Servlet compatible Jakarta EE (ex. Tomcat 10+ avec CDI/JPA configur\'es). Le cœur applicatif utilise : Servlets, Filters, CDI, JPA, Validation, JSP/JSTL, Jersey (JAX-RS).
+
+\section{Vue d'ensemble visuelle}
+\begin{center}
+\begin{tikzpicture}[node distance=1.3cm]
+    \tikzstyle{box}=[rectangle, rounded corners, draw=mainblue, very thick, minimum width=12cm, minimum height=1cm, align=center]
+    \node[box, fill=softblue] (front) {Interface Web (JSP + Bootstrap + JSTL)};
+    \node[box, below=of front, fill=softgray] (ctrl) {Contr\^oleurs (Servlets) + S\'ecurit\'e (Filters)};
+    \node[box, below=of ctrl, fill=softgreen] (repo) {Acc\`es donn\'ees (Repository + EntityManager CDI)};
+    \node[box, below=of repo, fill=softblue] (db) {Oracle Database (Tables PRODUCTS, SUPPLIERS, GLOBAL\_SETTINGS)};
+
+    \draw[-{Latex[length=3mm]}, thick, deepblue] (front) -- (ctrl);
+    \draw[-{Latex[length=3mm]}, thick, deepblue] (ctrl) -- (repo);
+    \draw[-{Latex[length=3mm]}, thick, deepblue] (repo) -- (db);
+\end{tikzpicture}
+\end{center}
+
+\chapter{Technologies utilis\'ees et justification}
+
+\begin{tabularx}{\textwidth}{@{}l l X@{}}
+\toprule
+\textbf{Cat\'egorie} & \textbf{Technologie} & \textbf{R\^ole dans le projet} \\
+\midrule
+Langage & Java 17 & Base du code, compatibilit\'e moderne, robustesse. \\
+Plateforme web & Jakarta EE 10 & APIs standard : Servlet, JSP, CDI, Validation, JPA. \\
+Persistance ORM & Hibernate 6.4.4 & Impl\'ementation JPA pour mapper les entit\'es sur Oracle. \\
+Base de donn\'ees & Oracle (ojdbc11) & Stockage transactionnel des entit\'es m\'etier. \\
+API REST & Jersey 3.1.5 & Exposition d'endpoints JSON sous \texttt{/api}. \\
+Injection DI & CDI + Weld Servlet & Injection des repositories, validateur, EntityManager. \\
+Validation & Hibernate Validator 8 & Contr\^oles de coh\'erence des champs m\'etier. \\
+Vue & JSP + JSTL + Bootstrap 5 & Interface web dynamique, responsive et visuelle. \\
+Build & Maven Wrapper & Compilation, packaging \texttt{.war}, cycle standard. \\
+\bottomrule
+\end{tabularx}
+
+\chapter{Architecture du projet et utilit\'e de chaque partie}
+
+\section{Organisation des dossiers}
+\begin{itemize}[leftmargin=1.2cm]
+    \item \texttt{src/main/java/com/smartstock/erp/model} : entit\'es JPA (Product, Supplier, GlobalSetting).
+    \item \texttt{.../repository} : couche d'acc\`es aux donn\'ees (GenericRepository + sp\'ecialisations).
+    \item \texttt{.../servlet} : contr\^oleurs web MVC et filtres de s\'ecurit\'e.
+    \item \texttt{.../resource} : endpoints REST (Hello, Product API).
+    \item \texttt{.../config} : producteurs CDI (EntityManager, Validator), listener contexte.
+    \item \texttt{src/main/resources/META-INF/persistence.xml} : config JPA/Hibernate/Oracle.
+    \item \texttt{src/main/webapp} : pages JSP, assets, CSS, WEB-INF.
+\end{itemize}
+
+\section{Couche Mod\`ele (Model)}
+\textbf{Utilit\'e :} repr\'esenter les donn\'ees m\'etier et leurs contraintes.
+\begin{itemize}[leftmargin=1.2cm]
+    \item \texttt{Product} : nom, quantit\'e en stock, seuil d'alerte, prix unitaire, date MAJ, fournisseur.
+    \item \texttt{Supplier} : identit\'e fournisseur, email unique, cat\'egorie, adresse, relation produits.
+    \item \texttt{GlobalSetting} : param\`etres de configuration globale de l'application.
+\end{itemize}
+
+\section{Couche Repository}
+\textbf{Utilit\'e :} isoler les op\'erations BD et factoriser CRUD/transactions.
+\begin{itemize}[leftmargin=1.2cm]
+    \item \texttt{GenericRepository<T,ID>} : cr\'eation, mise \`a jour, suppression, pagination, count.
+    \item \texttt{ProductRepository} : filtres avanc\'es (prix, statut stock, fournisseur), low-stock.
+    \item \texttt{SupplierRepository} : CRUD fournisseur.
+    \item \texttt{GlobalSettingRepository} : lecture/\'ecriture des r\'eglages globaux.
+\end{itemize}
+
+\section{Couche Contr\^oleur (Servlets)}
+\textbf{Utilit\'e :} piloter les requ\^etes HTTP et la navigation vers les vues.
+\begin{itemize}[leftmargin=1.2cm]
+    \item \texttt{LoginServlet}/\texttt{LogoutServlet} : ouverture/fermeture de session.
+    \item \texttt{ProductServlet} : CRUD + filtres + pagination produits.
+    \item \texttt{SupplierServlet} : CRUD + pagination fournisseurs.
+    \item \texttt{DashboardServlet} : indicateurs cl\'es (totaux + alertes stock).
+    \item \texttt{SettingsServlet} : param\'etrage global et persistance des options.
+\end{itemize}
+
+\section{Couche S\'ecurit\'e et cross-cutting}
+\begin{itemize}[leftmargin=1.2cm]
+    \item \texttt{AuthenticationFilter} : prot\`ege les pages internes et redirige vers login.
+    \item \texttt{SettingsFilter} : injecte les settings globaux dans le contexte web.
+    \item \texttt{AppContextListener} : initialise le cache des settings au d\'emarrage.
+\end{itemize}
+
+\section{Couche API REST}
+\textbf{Utilit\'e :} ouvrir l'application \`a des clients externes (mobile, front SPA, int\'egrations).
+\begin{itemize}[leftmargin=1.2cm]
+    \item \texttt{/api/hello} : endpoint de test de disponibilit\'e.
+    \item \texttt{/api/products} : liste des produits en JSON.
+    \item \texttt{/api/products/stock} : vue stock (actuellement m\^eme source produits).
+\end{itemize}
+
+\chapter{Analyse compl\`ete de la base de donn\'ees}
+
+\section{Configuration observ\'ee}
+Le fichier \texttt{persistence.xml} d\'efinit l'unit\'e \texttt{SmartStockPU} avec :
+\begin{itemize}[leftmargin=1.2cm]
+    \item provider Hibernate ;
+    \item transaction \texttt{RESOURCE\_LOCAL} ;
+    \item URL Oracle : \texttt{jdbc:oracle:thin:@127.0.0.1:1521/XEPDB1} ;
+    \item auto-update de sch\'ema : \texttt{hibernate.hbm2ddl.auto=update}.
+\end{itemize}
+
+\section{Sch\'ema logique (ERD simplifi\'e)}
+\begin{center}
+\begin{tikzpicture}[node distance=2.7cm]
+    \tikzstyle{ent}=[rectangle, rounded corners, draw=deepblue, thick, fill=softgray, minimum width=4.8cm, minimum height=3.3cm, align=left]
+
+    \node[ent] (sup) {
+      \textbf{SUPPLIERS}\\
+      PK: id\\
+      name\\
+      email (unique)\\
+      address\\
+      category\\
+      created\_at, updated\_at
+    };
+
+    \node[ent, right=of sup] (prod) {
+      \textbf{PRODUCTS}\\
+      PK: id\\
+      label\\
+      stock\_quantity\\
+      alert\_threshold\\
+      unit\_price\\
+      last\_updated\\
+      FK: supplier\_id
+    };
+
+    \node[ent, below=2.2cm of $(sup)!0.5!(prod)$] (set) {
+      \textbf{GLOBAL\_SETTINGS}\\
+      PK: setting\_key\\
+      setting\_value\\
+      description
+    };
+
+    \draw[-{Latex[length=3mm]}, very thick, mainblue] (prod.west) -- node[above]{N : 1} (sup.east);
+\end{tikzpicture}
+\end{center}
+
+\section{Contraintes et qualit\'e des donn\'ees}
+\begin{itemize}[leftmargin=1.2cm]
+    \item Contraintes Bean Validation sur les entit\'es : \texttt{@NotNull}, \texttt{@Size}, \texttt{@Email}, \texttt{@Min}, \texttt{@DecimalMin}.
+    \item Email fournisseur unique (niveau colonne).
+    \item Datation automatique via \texttt{@PrePersist}/\texttt{@PreUpdate}.
+\end{itemize}
+
+\section{Flux transactionnels}
+Les op\'erations CRUD passent par \texttt{executeInTransaction(...)} dans le repository g\'en\'erique :
+\begin{itemize}[leftmargin=1.2cm]
+    \item \texttt{begin()} avant op\'eration,
+    \item \texttt{commit()} si succ\`es,
+    \item \texttt{rollback()} en cas d'exception.
+\end{itemize}
+
+\chapter{Analyse fonctionnelle des \'ecrans}
+
+\section{Landing page et login}
+L'application propose une page vitrine moderne (branding + CTA) et une authentification par session. L'UI utilise Bootstrap, ic\^ones, animations (AOS), et une charte graphique coh\'erente (bleu/vert).
+
+\section{Dashboard}
+Le dashboard agr\`ege : nombre total de produits, fournisseurs, nombre d'alertes stock bas, et table des articles critiques. Cet \'ecran soutient la prise de d\'ecision rapide.
+
+\section{Gestion Produits}
+Module principal : listing pagin\'e, filtres multi-crit\`eres (label, prix min/max, statut stock, fournisseur), ajout/modification/suppression avec validations.
+
+\section{Gestion Fournisseurs}
+Module relationnel : listing pagin\'e, CRUD, recherche front, et lien indirect avec les produits via la cl\'e \`a \`a \texttt{supplier\_id}.
+
+\section{Param\`etres globaux}
+L'\'ecran Settings permet de persister des cl\'es globales (nom soci\'et\'e, devise, taux TVA, couleur th\`eme, etc.) stock\'ees en base dans \texttt{GLOBAL\_SETTINGS}.
+
+\chapter{Sch\'emas de pr\'esentation visuelle et color\'ee}
+
+\section{Diagramme de s\'equence (exemple : Ajout Produit)}
+\begin{center}
+\begin{tikzpicture}[node distance=1.6cm]
+    \tikzstyle{actor}=[rectangle, rounded corners, draw=deepblue, fill=softblue, minimum width=2.8cm, minimum height=0.9cm, align=center]
+    \node[actor] (u) {Utilisateur};
+    \node[actor, right=of u] (s) {ProductServlet};
+    \node[actor, right=of s] (r) {ProductRepository};
+    \node[actor, right=of r] (d) {Oracle DB};
+
+    \draw[-{Latex[length=2.8mm]}, thick] (u) -- node[above]{POST /products?action=insert} (s);
+    \draw[-{Latex[length=2.8mm]}, thick] (s) -- node[above]{validate + create()} (r);
+    \draw[-{Latex[length=2.8mm]}, thick] (r) -- node[above]{INSERT PRODUCT} (d);
+    \draw[-{Latex[length=2.8mm]}, thick] (d) -- node[below]{OK} (r);
+    \draw[-{Latex[length=2.8mm]}, thick] (r) -- node[below]{redirect products} (s);
+    \draw[-{Latex[length=2.8mm]}, thick] (s) -- node[below]{vue mise \`a jour} (u);
+\end{tikzpicture}
+\end{center}
+
+\section{Cycle de build et d\'eploiement}
+\begin{center}
+\begin{tikzpicture}[node distance=1.0cm]
+    \tikzstyle{phase}=[rectangle, draw=mainblue, thick, rounded corners, fill=softblue, minimum width=2.4cm, minimum height=0.9cm]
+    \node[phase] (a) {clean};
+    \node[phase, right=of a] (b) {compile};
+    \node[phase, right=of b] (c) {test};
+    \node[phase, right=of c] (d) {package};
+    \node[phase, right=of d, fill=softgreen] (e) {WAR deploy};
+
+    \draw[-{Latex[length=3mm]}, thick, deepblue] (a) -- (b);
+    \draw[-{Latex[length=3mm]}, thick, deepblue] (b) -- (c);
+    \draw[-{Latex[length=3mm]}, thick, deepblue] (c) -- (d);
+    \draw[-{Latex[length=3mm]}, thick, deepblue] (d) -- (e);
+\end{tikzpicture}
+\end{center}
+
+\chapter{Points forts, limites et recommandations}
+
+\section{Points forts}
+\begin{itemize}[leftmargin=1.2cm]
+    \item Architecture claire et s\'eparation des responsabilit\'es.
+    \item Code organis\'e par domaines techniques (model/repository/servlet/resource).
+    \item Bonne base pour extension (API REST d\'ej\`a en place).
+    \item Interface web moderne et soign\'ee, adapt\'ee \`a une d\'emo.
+\end{itemize}
+
+\section{Limites constat\'ees}
+\begin{itemize}[leftmargin=1.2cm]
+    \item Authentification actuellement cod\'ee en dur (compte admin statique).
+    \item Param\`etres BD (user/password) stock\'es en clair dans \texttt{persistence.xml}.
+    \item Peu de tests automatis\'es (aucun test m\'etier pr\'esent actuellement).
+\end{itemize}
+
+\section{Recommandations d'\'evolution}
+\begin{itemize}[leftmargin=1.2cm]
+    \item Introduire un module utilisateurs/roles en base (RBAC).
+    \item Externaliser la configuration sensible (variables d'environnement/secrets).
+    \item Ajouter des tests unitaires/int\'egration sur repositories et servlets.
+    \item Enrichir l'API REST (POST/PUT/DELETE + pagination + DTO).
+\end{itemize}
+
+\chapter*{Conclusion}
+\addcontentsline{toc}{chapter}{Conclusion}
+Cette analyse montre que SmartStock ERP repose sur une architecture solide, coh\'erente et professionnelle pour un projet acad\'emique orient\'e entreprise. Le socle technologique (Jakarta EE 10 + Hibernate + Oracle + JSP/Bootstrap) couvre l'ensemble de la cha\^ine applicative : interface, logique m\'etier, persistance et ouverture API. Pour une pr\'esentation de 15 minutes, les points \`a valoriser sont : la structure en couches, le mod\`ele de donn\'ees relationnel, la qualit\'e visuelle de l'interface, et la capacit\'e d'\'evolution vers une version industrielle.
+
+\end{document}
