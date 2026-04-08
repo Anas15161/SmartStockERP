@@ -9,6 +9,12 @@
         <class>com.smartstock.erp.model.Product</class>
         <class>com.smartstock.erp.model.Supplier</class>
         <class>com.smartstock.erp.model.GlobalSetting</class>
+        <!-- Nouvelles entités v2.0 -->
+        <class>com.smartstock.erp.model.Role</class>
+        <class>com.smartstock.erp.model.User</class>
+        <class>com.smartstock.erp.model.StockMovement</class>
+        <class>com.smartstock.erp.model.PurchaseOrder</class>
+        <class>com.smartstock.erp.model.PurchaseOrderItem</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
         <properties>

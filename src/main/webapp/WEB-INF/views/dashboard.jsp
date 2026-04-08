@@ -1,158 +1,320 @@
-<%@ include file="/includes/header.jsp" %>
-    <div class="row mb-5 animate-fade-up">
-        <div class="col-md-8">
-            <h2 class="fw-bold mb-1">Welcome back, ${sessionScope.user}!</h2>
-            <p class="text-muted small">Here's what's happening with your inventory today.</p>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de bord — SmartStockERP</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/layout.css">
+</head>
+<body>
+
+<%-- Sidebar de navigation --%>
+<jsp:include page="/WEB-INF/views/fragments/sidebar.jsp"/>
+
+<div class="main-content">
+    <%-- Topbar --%>
+    <div class="topbar d-flex align-items-center justify-content-between px-4 py-3">
+        <div>
+            <h4 class="fw-bold mb-0">Tableau de bord</h4>
+            <p class="text-muted small mb-0">Bienvenue, <strong>${currentUser.fullName}</strong> — Vue d'ensemble de votre inventaire</p>
         </div>
-        <div class="col-md-4 text-md-end d-flex align-items-center justify-content-md-end">
-            <span class="badge bg-soft-primary text-primary px-3 py-2 rounded-pill small">
-                <i class="bi bi-calendar3 me-2"></i>April 1, 2026
-            </span>
+        <div class="d-flex gap-2">
+            <a href="${pageContext.request.contextPath}/reports?type=inventory" target="_blank"
+               class="btn btn-outline-primary btn-sm rounded-pill">
+                <i class="bi bi-download me-1"></i> Rapport PDF
+            </a>
+            <a href="${pageContext.request.contextPath}/products?action=new"
+               class="btn btn-primary btn-sm rounded-pill">
+                <i class="bi bi-plus-lg me-1"></i> Nouveau produit
+            </a>
         </div>
     </div>
 
-    <!-- Stats Grid -->
-    <div class="row g-4 mb-5 animate-fade-up">
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm p-3 h-100 dash-card bg-glass">
-                <div class="d-flex align-items-center mb-3">
-                    <div class="bg-soft-primary rounded-circle p-2 me-3">
-                        <i class="bi bi-box-seam fs-4 text-primary"></i>
-                    </div>
-                    <span class="text-muted small fw-semibold">Total Inventory</span>
-                </div>
-                <h3 class="fw-bold mb-1">${totalProducts}</h3>
-                <span class="text-success small"><i class="bi bi-arrow-up-short"></i>+2.4% from last week</span>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm p-3 h-100 dash-card bg-glass">
-                <div class="d-flex align-items-center mb-3">
-                    <div class="bg-soft-success rounded-circle p-2 me-3">
-                        <i class="bi bi-truck fs-4 text-success"></i>
-                    </div>
-                    <span class="text-muted small fw-semibold">Partners</span>
-                </div>
-                <h3 class="fw-bold mb-1">${totalSuppliers}</h3>
-                <span class="text-muted small">Active suppliers</span>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm p-3 h-100 dash-card bg-glass">
-                <div class="d-flex align-items-center mb-3">
-                    <div class="bg-soft-danger rounded-circle p-2 me-3">
-                        <i class="bi bi-exclamation-triangle fs-4 text-danger"></i>
-                    </div>
-                    <span class="text-muted small fw-semibold">Alerts</span>
-                </div>
-                <h3 class="fw-bold mb-1 ${lowStockCount > 0 ? 'text-danger' : ''}">${lowStockCount}</h3>
-                <span class="text-muted small">Low stock items</span>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm p-3 h-100 dash-card bg-glass">
-                <div class="d-flex align-items-center mb-3">
-                    <div class="bg-soft-warning rounded-circle p-2 me-3">
-                        <i class="bi bi-currency-dollar fs-4 text-warning"></i>
-                    </div>
-                    <span class="text-muted small fw-semibold">Valuation</span>
-                </div>
-                <h3 class="fw-bold mb-1">842K</h3>
-                <span class="text-muted small">DH Total Value</span>
-            </div>
-        </div>
-    </div>
+    <div class="content-body px-4 pb-5">
 
-    <div class="row g-4 animate-fade-up">
-        <!-- Critical Items -->
-        <div class="col-lg-8">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0 fw-bold">Critical Stock Items</h5>
-                    <a href="products" class="btn btn-sm btn-link text-primary fw-semibold text-decoration-none">View All</a>
+        <%-- Alertes actives --%>
+        <c:if test="${outOfStockCount > 0}">
+            <div class="alert alert-danger d-flex align-items-center rounded-3 mb-4" role="alert">
+                <i class="bi bi-exclamation-octagon-fill me-3 fs-4"></i>
+                <div>
+                    <strong>${outOfStockCount} produit(s) en rupture de stock !</strong>
+                    <a href="${pageContext.request.contextPath}/products?status=out" class="alert-link ms-2">Voir les produits →</a>
                 </div>
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="bg-light smallest text-uppercase text-muted">
-                            <tr>
-                                <th class="ps-4">Product</th>
-                                <th>In Stock</th>
-                                <th>Min Level</th>
-                                <th class="pe-4 text-end">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <c:forEach var="p" items="${lowStockProducts}">
-                                <tr>
-                                    <td class="ps-4">
-                                        <div class="fw-semibold text-dark">${p.label}</div>
-                                        <div class="smallest text-muted">${p.supplier.name}</div>
-                                    </td>
-                                    <td><span class="badge bg-soft-danger text-danger rounded-pill">${p.stockQuantity}</span></td>
-                                    <td class="text-muted small">${p.alertThreshold}</td>
-                                    <td class="pe-4 text-end">
-                                        <a href="products?action=edit&id=${p.id}" class="btn btn-sm btn-light rounded-pill px-3 smallest">Order More</a>
-                                    </td>
-                                </tr>
-                            </c:forEach>
-                            <c:if test="${empty lowStockProducts}">
-                                <tr>
-                                    <td colspan="4" class="text-center py-5 text-muted italic">
-                                        <i class="bi bi-check2-circle fs-1 text-success opacity-25 d-block mb-2"></i>
-                                        All inventory levels are healthy.
-                                    </td>
-                                </tr>
-                            </c:if>
-                        </tbody>
-                    </table>
+            </div>
+        </c:if>
+        <c:if test="${lowStockCount > 0 && outOfStockCount == 0}">
+            <div class="alert alert-warning d-flex align-items-center rounded-3 mb-4" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-3 fs-4"></i>
+                <div>
+                    <strong>${lowStockCount} produit(s) avec un stock faible.</strong>
+                    <a href="${pageContext.request.contextPath}/products?status=low" class="alert-link ms-2">Voir les alertes →</a>
+                </div>
+            </div>
+        </c:if>
+
+        <%-- Cartes de statistiques --%>
+        <div class="row g-4 mb-4">
+            <div class="col-sm-6 col-xl-3">
+                <div class="stat-card stat-card-blue">
+                    <div class="stat-icon"><i class="bi bi-box-seam"></i></div>
+                    <div class="stat-value">${totalProducts}</div>
+                    <div class="stat-label">Produits en catalogue</div>
+                    <a href="${pageContext.request.contextPath}/products" class="stat-link">Gérer →</a>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="stat-card stat-card-green">
+                    <div class="stat-icon"><i class="bi bi-truck"></i></div>
+                    <div class="stat-value">${totalSuppliers}</div>
+                    <div class="stat-label">Fournisseurs actifs</div>
+                    <a href="${pageContext.request.contextPath}/suppliers" class="stat-link">Gérer →</a>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="stat-card ${outOfStockCount > 0 ? 'stat-card-red' : (lowStockCount > 0 ? 'stat-card-orange' : 'stat-card-green')}">
+                    <div class="stat-icon"><i class="bi bi-exclamation-triangle"></i></div>
+                    <div class="stat-value">${lowStockCount + outOfStockCount}</div>
+                    <div class="stat-label">Alertes de stock</div>
+                    <a href="${pageContext.request.contextPath}/products?status=low" class="stat-link">Voir →</a>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="stat-card stat-card-purple">
+                    <div class="stat-icon"><i class="bi bi-currency-dollar"></i></div>
+                    <div class="stat-value">
+                        <fmt:formatNumber value="${totalStockValue}" type="number" maxFractionDigits="0"/>
+                    </div>
+                    <div class="stat-label">Valeur totale du stock (DH)</div>
+                    <a href="${pageContext.request.contextPath}/reports?type=inventory" target="_blank" class="stat-link">Rapport →</a>
                 </div>
             </div>
         </div>
 
-        <!-- Quick Actions & Trends -->
-        <div class="col-lg-4">
-            <div class="card border-0 shadow-sm mb-4">
-                <div class="card-body">
-                    <h6 class="fw-bold mb-3">Quick Actions</h6>
-                    <div class="d-grid gap-2">
-                        <a href="products?action=new" class="btn btn-primary rounded-pill text-start py-2">
-                            <i class="bi bi-plus-circle me-2"></i>New Product
-                        </a>
-                        <a href="suppliers?action=new" class="btn btn-soft-success rounded-pill text-start py-2">
-                            <i class="bi bi-person-plus me-2"></i>New Supplier
-                        </a>
+        <%-- Ligne principale : Graphiques + Alertes --%>
+        <div class="row g-4 mb-4">
+
+            <%-- Graphique : Répartition du stock --%>
+            <div class="col-lg-5">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h6 class="fw-bold mb-0"><i class="bi bi-pie-chart me-2 text-primary"></i>Répartition du stock</h6>
+                    </div>
+                    <div class="card-body d-flex align-items-center justify-content-center">
+                        <canvas id="stockStatusChart" style="max-height: 260px;"></canvas>
                     </div>
                 </div>
             </div>
-            
-            <div class="card border-0 shadow-sm bg-dark text-white overflow-hidden">
-                <div class="card-body p-4 position-relative">
-                    <div class="position-relative z-1">
-                        <h6 class="text-uppercase smallest fw-bold opacity-50 mb-3">Storage Capacity</h6>
-                        <h2 class="fw-bold mb-1">78%</h2>
-                        <div class="progress bg-white bg-opacity-10 mt-3" style="height: 6px;">
-                            <div class="progress-bar bg-primary" style="width: 78%"></div>
+
+            <%-- Produits en alerte --%>
+            <div class="col-lg-7">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+                        <h6 class="fw-bold mb-0"><i class="bi bi-exclamation-triangle me-2 text-warning"></i>Produits en alerte</h6>
+                        <a href="${pageContext.request.contextPath}/products?status=low" class="btn btn-sm btn-link text-primary fw-semibold text-decoration-none">Voir tout</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4 smallest text-uppercase text-muted">Produit</th>
+                                    <th class="smallest text-uppercase text-muted">Stock</th>
+                                    <th class="smallest text-uppercase text-muted">Seuil</th>
+                                    <th class="pe-4 text-end smallest text-uppercase text-muted">Statut</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach var="p" items="${lowStockProducts}" end="7">
+                                    <tr>
+                                        <td class="ps-4">
+                                            <div class="fw-semibold small">${p.label}</div>
+                                            <div class="text-muted" style="font-size:0.7rem">${p.supplier.name}</div>
+                                        </td>
+                                        <td><span class="badge bg-warning text-dark rounded-pill">${p.stockQuantity}</span></td>
+                                        <td class="text-muted small">${p.alertThreshold}</td>
+                                        <td class="pe-4 text-end">
+                                            <a href="${pageContext.request.contextPath}/purchase-orders?action=new"
+                                               class="btn btn-sm btn-outline-primary rounded-pill px-3" style="font-size:0.7rem">
+                                                Commander
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                                <c:forEach var="p" items="${outOfStockProducts}" end="3">
+                                    <tr>
+                                        <td class="ps-4">
+                                            <div class="fw-semibold small">${p.label}</div>
+                                            <div class="text-muted" style="font-size:0.7rem">${p.supplier.name}</div>
+                                        </td>
+                                        <td><span class="badge bg-danger rounded-pill">0</span></td>
+                                        <td class="text-muted small">${p.alertThreshold}</td>
+                                        <td class="pe-4 text-end">
+                                            <span class="badge bg-danger rounded-pill" style="font-size:0.7rem">RUPTURE</span>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                                <c:if test="${empty lowStockProducts && empty outOfStockProducts}">
+                                    <tr>
+                                        <td colspan="4" class="text-center py-5 text-muted">
+                                            <i class="bi bi-check2-circle fs-1 text-success opacity-50 d-block mb-2"></i>
+                                            <span class="small">Tous les niveaux de stock sont sains.</span>
+                                        </td>
+                                    </tr>
+                                </c:if>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <%-- Ligne secondaire : Bons de commande + Mouvements récents --%>
+        <div class="row g-4">
+
+            <%-- Bons de commande en attente --%>
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+                        <h6 class="fw-bold mb-0"><i class="bi bi-file-earmark-text me-2 text-info"></i>Commandes en attente</h6>
+                        <span class="badge bg-info rounded-pill">${pendingOrders}</span>
+                    </div>
+                    <div class="card-body">
+                        <c:if test="${pendingOrders == 0}">
+                            <div class="text-center py-4 text-muted">
+                                <i class="bi bi-check-circle fs-2 text-success opacity-50 d-block mb-2"></i>
+                                <span class="small">Aucune commande en attente.</span>
+                            </div>
+                        </c:if>
+                        <c:if test="${pendingOrders > 0}">
+                            <p class="text-muted small">
+                                <strong>${pendingOrders}</strong> bon(s) de commande nécessitent une action.
+                            </p>
+                        </c:if>
+                        <div class="d-grid gap-2 mt-3">
+                            <a href="${pageContext.request.contextPath}/purchase-orders"
+                               class="btn btn-outline-info btn-sm rounded-pill">
+                                <i class="bi bi-list-ul me-1"></i> Voir toutes les commandes
+                            </a>
+                            <a href="${pageContext.request.contextPath}/purchase-orders?action=new"
+                               class="btn btn-info btn-sm rounded-pill text-white">
+                                <i class="bi bi-plus-lg me-1"></i> Nouveau bon de commande
+                            </a>
                         </div>
-                        <p class="smallest mt-3 mb-0 opacity-75">4,200 / 6,000 units occupied</p>
                     </div>
-                    <i class="bi bi-pie-chart-fill position-absolute end-0 bottom-0 opacity-10" style="font-size: 8rem; margin-right: -1rem; margin-bottom: -1rem;"></i>
+                </div>
+            </div>
+
+            <%-- Derniers mouvements de stock --%>
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+                        <h6 class="fw-bold mb-0"><i class="bi bi-arrow-left-right me-2 text-secondary"></i>Derniers mouvements de stock</h6>
+                        <a href="${pageContext.request.contextPath}/stock-movements" class="btn btn-sm btn-link text-primary fw-semibold text-decoration-none">Voir tout</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4 smallest text-uppercase text-muted">Produit</th>
+                                    <th class="smallest text-uppercase text-muted">Type</th>
+                                    <th class="smallest text-uppercase text-muted">Quantité</th>
+                                    <th class="smallest text-uppercase text-muted">Date</th>
+                                    <th class="pe-4 smallest text-uppercase text-muted">Référence</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach var="mv" items="${recentMovements}">
+                                    <tr>
+                                        <td class="ps-4 small fw-semibold">${mv.product.label}</td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${mv.movementType == 'ENTRY'}">
+                                                    <span class="badge bg-success rounded-pill">
+                                                        <i class="bi bi-arrow-down-circle me-1"></i>Entrée
+                                                    </span>
+                                                </c:when>
+                                                <c:when test="${mv.movementType == 'EXIT'}">
+                                                    <span class="badge bg-danger rounded-pill">
+                                                        <i class="bi bi-arrow-up-circle me-1"></i>Sortie
+                                                    </span>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <span class="badge bg-secondary rounded-pill">Ajustement</span>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                        <td class="small fw-bold">${mv.quantity}</td>
+                                        <td class="small text-muted">
+                                            <fmt:formatDate value="${mv.movementDate}" pattern="dd/MM/yyyy HH:mm"
+                                                            type="both"/>
+                                        </td>
+                                        <td class="pe-4 small text-muted">${mv.reference}</td>
+                                    </tr>
+                                </c:forEach>
+                                <c:if test="${empty recentMovements}">
+                                    <tr>
+                                        <td colspan="5" class="text-center py-4 text-muted small">
+                                            Aucun mouvement de stock enregistré.
+                                        </td>
+                                    </tr>
+                                </c:if>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
-<style>
-    .bg-soft-primary { background-color: rgba(13, 110, 253, 0.1); }
-    .bg-soft-success { background-color: rgba(25, 135, 84, 0.1); }
-    .bg-soft-danger { background-color: rgba(220, 53, 69, 0.1); }
-    .bg-soft-warning { background-color: rgba(255, 193, 7, 0.1); }
-    .btn-soft-success { background-color: rgba(25, 135, 84, 0.1); color: #198754; border: none; }
-    .btn-soft-success:hover { background-color: rgba(25, 135, 84, 0.2); }
-    .dash-card { border-radius: 20px; transition: transform 0.2s; }
-    .dash-card:hover { transform: translateY(-5px); }
-    .bg-glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); }
-    .smallest { font-size: 0.7rem; }
-</style>
+    </div><%-- fin content-body --%>
+</div><%-- fin main-content --%>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script>
+    // ---- Graphique en donut : Répartition du stock ----
+    const totalProducts  = ${totalProducts};
+    const lowStockCount  = ${lowStockCount};
+    const outStockCount  = ${outOfStockCount};
+    const healthyCount   = Math.max(0, totalProducts - lowStockCount - outStockCount);
+
+    const ctx = document.getElementById('stockStatusChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Stock sain', 'Stock faible', 'Rupture de stock'],
+            datasets: [{
+                data: [healthyCount, lowStockCount, outStockCount],
+                backgroundColor: ['#16a34a', '#f59e0b', '#dc2626'],
+                borderColor: ['#fff', '#fff', '#fff'],
+                borderWidth: 3,
+                hoverOffset: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            cutout: '65%',
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { padding: 16, font: { size: 12 } }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(ctx) {
+                            const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                            const pct = total > 0 ? ((ctx.parsed / total) * 100).toFixed(1) : 0;
+                            return ` ${ctx.label}: ${ctx.parsed} (${pct}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
 </body>
 </html>

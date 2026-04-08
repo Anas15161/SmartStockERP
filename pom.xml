@@ -19,6 +19,8 @@
         <oracle.version>23.3.0.23.09</oracle.version>
         <jersey.version>3.1.5</jersey.version>
         <junit.version>5.10.2</junit.version>
+        <bcrypt.version>0.10.2</bcrypt.version>
+        <itext.version>8.0.4</itext.version>
     </properties>
 
     <dependencies>
@@ -97,6 +99,30 @@
             <groupId>org.glassfish</groupId>
             <artifactId>jakarta.el</artifactId>
             <version>4.0.2</version>
+        </dependency>
+
+        <!-- BCrypt pour le hachage sécurisé des mots de passe -->
+        <dependency>
+            <groupId>at.favre.lib</groupId>
+            <artifactId>bcrypt</artifactId>
+            <version>${bcrypt.version}</version>
+        </dependency>
+
+        <!-- iText 7 — Génération de rapports PDF -->
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>kernel</artifactId>
+            <version>${itext.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>layout</artifactId>
+            <version>${itext.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>io</artifactId>
+            <version>${itext.version}</version>
         </dependency>
 
         <!-- Testing -->
