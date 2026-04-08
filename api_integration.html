@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartStock ERP - Intégration des APIs REST</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --primary: #0f172a;
+            --accent: #3b82f6;
+            --code-bg: #1e293b;
+            --code-text: #e2e8f0;
+            --bg: #f8fafc;
+            --api-get: #10b981;
+            --api-post: #f59e0b;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--primary);
+            margin: 0;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 2rem;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .base-url {
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            display: inline-block;
+            margin: 1rem 0;
+        }
+
+        section {
+            margin-bottom: 3rem;
+        }
+
+        h2 {
+            border-left: 5px solid var(--accent);
+            padding-left: 1rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .endpoint-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.2s;
+        }
+
+        .endpoint-card:hover {
+            transform: translateX(5px);
+            border-color: var(--accent);
+        }
+
+        .method {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-right: 10px;
+            color: white;
+        }
+
+        .get { background-color: var(--api-get); }
+        .post { background-color: var(--api-post); }
+
+        .path {
+            font-family: 'Fira Code', monospace;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .description {
+            margin: 1rem 0;
+            color: #64748b;
+        }
+
+        pre {
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 1.5rem;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+        }
+
+        .example-box {
+            background: #f1f5f9;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+
+        .example-box h4 {
+            margin-top: 0;
+            color: #475569;
+        }
+
+        footer {
+            margin-top: 4rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #94a3b8;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 2rem;
+        }
+
+        .badge {
+            background: #dcfce7;
+            color: #166534;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1><i class="fas fa-plug"></i> Documentation API REST</h1>
+        <p>Guide d'intégration et spécifications des points de terminaison SmartStock ERP.</p>
+        <div class="base-url">
+            BASE_URL: http://localhost:8080/smartstock-erp/api
+        </div>
+    </header>
+
+    <section id="introduction">
+        <h2>Introduction</h2>
+        <p>
+            L'API de SmartStock ERP est construite avec <strong>Jakarta RESTful Web Services (JAX-RS)</strong>. 
+            Elle permet une communication fluide entre le backend Java EE et des clients tiers (applications mobiles, tableaux de bord externes, scripts d'automatisation).
+        </p>
+    </section>
+
+    <section id="endpoints">
+        <h2>Points de Terminaison (Endpoints)</h2>
+
+        <!-- Products -->
+        <div class="endpoint-card">
+            <span class="method get">GET</span>
+            <span class="path">/products</span>
+            <p class="description">Récupère la liste complète de tous les produits enregistrés en base de données.</p>
+            <div class="example-box">
+                <h4>Réponse (JSON) :</h4>
+                <pre><code>[
+  {
+    "id": 1,
+    "name": "Ordinateur Portable Dell",
+    "quantity": 25,
+    "price": 1200.50,
+    "sku": "DELL-XPS-13"
+  },
+  ...
+]</code></pre>
+            </div>
+        </div>
+
+        <!-- Stock Status -->
+        <div class="endpoint-card">
+            <span class="method get">GET</span>
+            <span class="path">/products/stock</span>
+            <p class="description">Récupère l'état actuel des stocks. Identique à la liste des produits mais optimisé pour l'affichage des niveaux.</p>
+        </div>
+
+        <!-- Hello Service -->
+        <div class="endpoint-card">
+            <span class="method get">GET</span>
+            <span class="path">/hello</span>
+            <p class="description">Service de test pour vérifier la disponibilité de l'API.</p>
+            <div class="example-box">
+                <h4>Réponse (Text) :</h4>
+                <pre><code>SmartStock ERP: API is running!</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <section id="integration">
+        <h2>Intégration Frontend</h2>
+        <p>Voici un exemple d'utilisation de l'API avec l'API standard JavaScript <code>fetch</code> :</p>
+        <pre><code>async function fetchProducts() {
+    try {
+        const response = await fetch('http://localhost:8080/smartstock-erp/api/products');
+        if (!response.ok) throw new Error('Erreur réseau');
+        
+        const products = await response.json();
+        console.log('Produits chargés :', products);
+        
+        // Exemple d'affichage dans le DOM
+        products.forEach(p => {
+            console.log(`Produit: ${p.name} | Stock: ${p.quantity}`);
+        });
+    } catch (error) {
+        console.error('Erreur lors de la récupération :', error);
+    }
+}</code></pre>
+    </section>
+
+    <section id="security">
+        <h2>Sécurité & CORS</h2>
+        <p>
+            <span class="badge">Avertissement</span> Actuellement, l'API est accessible au sein du même domaine. 
+            Pour des appels cross-domain (CORS), un <code>ContainerResponseFilter</code> doit être implémenté pour autoriser les origines externes.
+        </p>
+    </section>
+
+    <footer>
+        &copy; 2026 SmartStock ERP - Documentation Technique v1.2
+    </footer>
+</div>
+
+</body>
+</html>
