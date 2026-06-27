@@ -16,6 +16,22 @@ public class ProductRepository extends GenericRepository<Product, Long> {
                 .getResultList();
     }
 
+    public List<Product> findByStatus(String status) {
+        if ("out".equalsIgnoreCase(status)) {
+            return em.createQuery("select p from Product p where p.stockQuantity <= 0", Product.class).getResultList();
+        } else if ("low".equalsIgnoreCase(status)) {
+            return findLowStockProducts();
+        } else if ("healthy".equalsIgnoreCase(status)) {
+            return em.createQuery("select p from Product p where p.stockQuantity > p.alertThreshold", Product.class).getResultList();
+        }
+        return em.createQuery("select p from Product p", Product.class).getResultList();
+    }
+
+    public java.math.BigDecimal calculateTotalStockValue() {
+        java.math.BigDecimal total = em.createQuery("select sum(p.unitPrice * p.stockQuantity) from Product p", java.math.BigDecimal.class).getSingleResult();
+        return total != null ? total : java.math.BigDecimal.ZERO;
+    }
+
     public List<Product> findFilteredPaginated(int page, int size, String label, Double minPrice, Double maxPrice, String status, Long supplierId, String supplierName) {
         StringBuilder hql = new StringBuilder("select p from Product p where 1=1");
         appendFilters(hql, label, minPrice, maxPrice, status, supplierId, supplierName);

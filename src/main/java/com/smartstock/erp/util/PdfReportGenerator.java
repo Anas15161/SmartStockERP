@@ -95,17 +95,17 @@ public class PdfReportGenerator {
                 DeviceRgb rowBg  = isOut ? new DeviceRgb(254, 226, 226)
                         : isLow ? new DeviceRgb(255, 237, 213) : null;
 
-                BigDecimal stockValue = p.getPrice() != null
-                        ? p.getPrice().multiply(BigDecimal.valueOf(p.getStockQuantity()))
+                BigDecimal stockValue = p.getUnitPrice() != null
+                        ? p.getUnitPrice().multiply(BigDecimal.valueOf(p.getStockQuantity()))
                         : BigDecimal.ZERO;
 
                 addTableRow(table, fontRegular, rowBg,
-                        p.getReference() != null ? p.getReference() : "—",
-                        p.getBarcode() != null ? p.getBarcode() : "—",
+                        p.getId() != null ? String.valueOf(p.getId()) : "—",
+                        "—",
                         p.getLabel(),
                         String.valueOf(p.getStockQuantity()),
                         String.valueOf(p.getAlertThreshold()),
-                        formatAmount(p.getPrice()) + " DH",
+                        formatAmount(p.getUnitPrice()) + " DH",
                         formatAmount(stockValue) + " DH");
             }
 
@@ -152,7 +152,7 @@ public class PdfReportGenerator {
                 addTableHeader(t, fontBold, "Référence", "Désignation", "Stock", "Fournisseur");
                 for (Product p : outOfStock) {
                     addTableRow(t, fontRegular, new DeviceRgb(254, 226, 226),
-                            p.getReference() != null ? p.getReference() : "—",
+                            p.getId() != null ? String.valueOf(p.getId()) : "—",
                             p.getLabel(),
                             "0",
                             p.getSupplier() != null ? p.getSupplier().getName() : "—");
@@ -170,7 +170,7 @@ public class PdfReportGenerator {
                 addTableHeader(t, fontBold, "Référence", "Désignation", "Stock", "Seuil", "Fournisseur");
                 for (Product p : lowStock) {
                     addTableRow(t, fontRegular, new DeviceRgb(255, 237, 213),
-                            p.getReference() != null ? p.getReference() : "—",
+                            p.getId() != null ? String.valueOf(p.getId()) : "—",
                             p.getLabel(),
                             String.valueOf(p.getStockQuantity()),
                             String.valueOf(p.getAlertThreshold()),
@@ -231,7 +231,7 @@ public class PdfReportGenerator {
                         .setPadding(4);
 
                 String dateStr = mv.getMovementDate() != null
-                        ? mv.getMovementDate().toLocalDateTime().format(DATETIME_FMT) : "—";
+                        ? mv.getMovementDate().format(DATETIME_FMT) : "—";
 
                 table.addCell(createCell(mv.getProduct().getLabel(), fontRegular));
                 table.addCell(typeCell);
@@ -295,8 +295,6 @@ public class PdfReportGenerator {
                             .setFontColor(ColorConstants.GRAY).setMarginBottom(4))
                     .add(new Paragraph(order.getSupplier().getName()).setFont(fontBold).setFontSize(11))
                     .add(new Paragraph(order.getSupplier().getEmail() != null ? order.getSupplier().getEmail() : "")
-                            .setFont(fontRegular).setFontSize(9).setFontColor(ColorConstants.GRAY))
-                    .add(new Paragraph(order.getSupplier().getPhone() != null ? order.getSupplier().getPhone() : "")
                             .setFont(fontRegular).setFontSize(9).setFontColor(ColorConstants.GRAY))
                     .setBorder(null).setBackgroundColor(COLOR_LIGHT_BG).setPadding(12).setBorderRadius(
                             new com.itextpdf.layout.properties.BorderRadius(8));
